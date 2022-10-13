@@ -11,8 +11,7 @@ def build_network(net_name,n_cluster=None):
                             'reuters_mlp_vae_256_128_64_gaussian', 
                             'arrhythmia_mlp_vae_gaussian', 'cardio_mlp_vae_gaussian', 'satellite_mlp_vae_gaussian', 
                             'satimage-2_mlp_vae_gaussian', 'shuttle_mlp_vae_gaussian',
-                            'annthyroid_mlp_vae_gaussian', 'breastw_mlp_vae_gaussian', 'cover_mlp_vae_gaussian', 'ecoli_mlp_vae_gaussian', 'glass_mlp_vae_gaussian', 'ionosphere_mlp_vae_gaussian', 'letter_mlp_vae_gaussian', 'lympho_mlp_vae_gaussian', 'mammography_mlp_vae_gaussian', 'musk_mlp_vae_gaussian', 'optdigits_mlp_vae_gaussian', 'pendigits_mlp_vae_gaussian', 'pima_mlp_vae_gaussian', 'speech_mlp_vae_gaussian', 'vertebral_mlp_vae_gaussian', 'vowels_mlp_vae_gaussian', 'wbc_mlp_vae_gaussian', 'wine_mlp_vae_gaussian',
-                            'thyroid_mlp_vae_gaussian',
+                            'annthyroid_mlp_vae_gaussian', 'breastw_mlp_vae_gaussian', 'cover_mlp_vae_gaussian', 'glass_mlp_vae_gaussian', 'ionosphere_mlp_vae_gaussian', 'letter_mlp_vae_gaussian', 'mammography_mlp_vae_gaussian', 'musk_mlp_vae_gaussian', 'optdigits_mlp_vae_gaussian', 'pendigits_mlp_vae_gaussian', 'pima_mlp_vae_gaussian', 'speech_mlp_vae_gaussian', 'vertebral_mlp_vae_gaussian', 'vowels_mlp_vae_gaussian', 'wbc_mlp_vae_gaussian','thyroid_mlp_vae_gaussian',
                            )
 
     assert net_name in implemented_networks
@@ -50,8 +49,6 @@ def build_network(net_name,n_cluster=None):
         net = AD_mlp_Vae_gaussian(x_dim=9, h_dims=[32, 16], rep_dim=8, bias=False)
     if net_name == 'cover_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=10, h_dims=[32, 16], rep_dim=8, bias=False)
-    if net_name == 'ecoli_mlp_vae_gaussian':
-        net = AD_mlp_Vae_gaussian(x_dim=7, h_dims=[32, 16], rep_dim=4, bias=False)
     if net_name == 'glass_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=9, h_dims=[32, 16], rep_dim=8, bias=False)
     if net_name == 'ionosphere_mlp_vae_gaussian':
@@ -59,8 +56,6 @@ def build_network(net_name,n_cluster=None):
         #net = AD_mlp_Vae_gaussian(x_dim=33, h_dims=[64,32], rep_dim=16, bias=False)
     if net_name == 'letter_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=32, h_dims=[32, 16], rep_dim=8, bias=False)
-    if net_name == 'lympho_mlp_vae_gaussian':
-        net = AD_mlp_Vae_gaussian(x_dim=18, h_dims=[32, 16], rep_dim=8, bias=False)
     if net_name == 'mammography_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=6, h_dims=[32, 16], rep_dim=4, bias=False)
     if net_name == 'musk_mlp_vae_gaussian':
@@ -79,8 +74,6 @@ def build_network(net_name,n_cluster=None):
         net = AD_mlp_Vae_gaussian(x_dim=12, h_dims=[32, 16], rep_dim=8, bias=False)
     if net_name == 'wbc_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=30, h_dims=[32, 16], rep_dim=8, bias=False)
-    if net_name == 'wine_mlp_vae_gaussian':
-        net = AD_mlp_Vae_gaussian(x_dim=13, h_dims=[32, 16], rep_dim=8, bias=False)
 
 
     return net
