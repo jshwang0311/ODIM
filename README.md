@@ -15,4 +15,4 @@ In this experiments, you can calculate TrainAUC, TrainAP(AveragePrecision), Test
 ```bash
 python calculate_AUC.py --dataset_name 'mnist' --gpu_num 0
 ```
-You can change `dataset_name` to one of mnist, fmnist, wafer_scale, reuters and tables (annthyroid, brestw, cover, ...).
+And you can change `dataset_name` to one of mnist, fmnist, wafer_scale, reuters and tables (annthyroid, brestw, cover, and so on).
