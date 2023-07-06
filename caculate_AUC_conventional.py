@@ -5,16 +5,17 @@ import random
 import numpy as np
 
 from datasets.main import load_dataset
-from optim.prop_trainer import *
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
 
 
-from sklearn.mixture import GaussianMixture
-from sklearn.preprocessing import MinMaxScaler
 from sklearn import metrics
 from sklearn.metrics import roc_auc_score, average_precision_score
+
+from sklearn.ensemble import IsolationForest
+from sklearn.svm import OneClassSVM
+from sklearn.neighbors import LocalOutlierFactor
 
 
 import argparse
@@ -332,11 +333,21 @@ if __name__ == "__main__":
         row_name_list.append(row_name)
         row_name = f'Std'
         row_name_list.append(row_name)
-        train_auc_list = []
-        train_ap_list = []
-        test_auc_list = []
-        test_ap_list = []
         
+        oc_train_auc_list = []
+        oc_train_ap_list = []
+        oc_test_auc_list = []
+        oc_test_ap_list = []
+        
+        lof_train_auc_list = []
+        lof_train_ap_list = []
+        lof_test_auc_list = []
+        lof_test_ap_list = []
+        
+        if_train_auc_list = []
+        if_train_ap_list = []
+        if_test_auc_list = []
+        if_test_ap_list = []
         for seed_idx in range(len(data_seed_list)):
             seed = data_seed_list[seed_idx]
 
@@ -355,6 +366,7 @@ if __name__ == "__main__":
             logger.setLevel(logging.INFO)
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             log_file = save_dir + '/log_'+dataset_name+'_trainOption'+ train_option + '_normal' + str(normal_class) +'.txt'
+            log_file = save_dir + '/log_normal_class'+str(normal_class).replace('[','').replace(']','').replace(', ','_')+'_OCSVM.txt'
             file_handler = logging.FileHandler(log_file)
             file_handler.setLevel(logging.INFO)
             file_handler.setFormatter(formatter)
@@ -402,139 +414,244 @@ if __name__ == "__main__":
             np.random.seed(seed)
             torch.manual_seed(seed)
             torch.cuda.manual_seed(seed)
-            train_ys = []
-            train_idxs = []
-            for (_, outputs, idxs) in train_loader:
-                train_ys.append(outputs.data.numpy())
-                train_idxs.append(idxs.data.numpy())
+            
+            
+            train_set = []
+            best_train_targets_list = []
+            idx_list = []
+            for data in train_loader:
+                inputs, targets, idx = data
+                inputs = inputs.view(inputs.size(0), -1)
+                train_set.append(inputs.numpy())
+                best_train_targets_list  =  best_train_targets_list + list(targets.numpy())
+                idx_list += list(idx.numpy())
 
-            train_ys = np.hstack(train_ys)
-            train_idxs = np.hstack(train_idxs)
-            train_idxs_ys = pd.DataFrame({'idx' : train_idxs,'y' : train_ys})
-
-
-            test_ys = []
-            test_idxs = []
-            for (_, outputs, idxs) in test_loader:
-                test_ys.append(outputs.data.numpy())
-                test_idxs.append(idxs.data.numpy())
-
-            test_ys = np.hstack(test_ys)
-            test_idxs = np.hstack(test_idxs)
-            test_idxs_ys = pd.DataFrame({'idx' : test_idxs,'y' : test_ys})
-
-
-
-            ens_train_me_losses = 0
-            ens_st_train_me_losses = 0
-
-            ## patience index
-            train_n = train_ys.shape[0]
-            check_iter = np.min(np.array([10, (train_n // batch_size)]))
-            patience = np.ceil(patience_thres / check_iter).astype('int')
-            loss_column = ['idx','ens_value','ens_st_value','y']
-            for model_iter in range(n_ens):
-                model_seed = start_model_seed+(model_iter*10)
-
-                logger.info('Set model seed to %d.' % (model_seed))
-                ## step 1
-                train_idxs_losses, test_idxs_losses, running_time = odim(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option)
-                train_me_losses = (train_idxs_losses.to_numpy())[:,1]
-                st_train_me_losses = (train_me_losses - train_me_losses.mean())/train_me_losses.std()
-                train_idxs_losses['st_loss'] = st_train_me_losses
-                add_label_idx_losses = pd.merge(train_idxs_losses, train_idxs_ys, on ='idx')
-                fpr, tpr, thresholds = metrics.roc_curve(np.array(add_label_idx_losses['y']), np.array(add_label_idx_losses['loss']), pos_label=1)
-                roc_auc = metrics.auc(fpr, tpr)
-                logger.info('\n...Train_AUC value- VAE: %0.4f' %(roc_auc))
+            train_set = np.concatenate(train_set)
+            clf = OneClassSVM(gamma='auto').fit(train_set)
+            train_losses = clf.score_samples(train_set)
+            train_losses = train_losses * (-1)
+            
+            auc_val = roc_auc_score(best_train_targets_list,train_losses)
+            ap_val = average_precision_score(best_train_targets_list, train_losses)
+            logger.info('train_auc: %.4f' % auc_val)
+            logger.info('train_ap: %.4f' % ap_val)
+            
+            oc_train_auc_list.append(auc_val)
+            oc_train_ap_list.append(ap_val)
 
 
-                test_me_losses = (test_idxs_losses.to_numpy())[:,1]
-                st_test_me_losses = (test_me_losses - test_me_losses.mean())/test_me_losses.std()
-                test_idxs_losses['st_loss'] = st_test_me_losses
-                add_label_idx_test_losses = pd.merge(test_idxs_losses, test_idxs_ys, on ='idx')
-                fpr, tpr, thresholds = metrics.roc_curve(np.array(add_label_idx_test_losses['y']), np.array(add_label_idx_test_losses['loss']), pos_label=1)
-                roc_auc = metrics.auc(fpr, tpr)
-                logger.info('\n...Test_AUC value- VAE: %0.4f' %(roc_auc))
+            test_set = []
+            best_test_targets_list = []
+            for data in test_loader:
+                inputs, targets, idx = data
+                inputs = inputs.view(inputs.size(0), -1)
+                test_set.append(inputs.numpy())
+                best_test_targets_list  =  best_test_targets_list + list(targets.numpy())
 
 
-                if model_iter == 0:
-                    ens_loss = add_label_idx_losses
-                    ens_loss.columns = loss_column
+            test_set = np.concatenate(test_set)
+            test_losses = clf.score_samples(test_set)
+            test_losses = test_losses * (-1)
+            
+            
+            auc_val = roc_auc_score(best_test_targets_list,test_losses)
+            ap_val = average_precision_score(best_test_targets_list, test_losses)
+            logger.info('test_auc: %.4f' % auc_val)
+            logger.info('test_ap: %.4f' % ap_val)
+            
+            oc_test_auc_list.append(auc_val)
+            oc_test_ap_list.append(ap_val)
 
-                    test_ens_loss = add_label_idx_test_losses
-                    test_ens_loss.columns = loss_column
-                else:
-                    merge_data = pd.merge(ens_loss, train_idxs_losses, on = 'idx')
-                    merge_data['ens_value'] = merge_data['ens_value'] + merge_data['loss']
-                    merge_data['ens_st_value'] = merge_data['ens_st_value'] + merge_data['st_loss']
-                    ens_loss = merge_data[loss_column]
-
-                    test_merge_data = pd.merge(test_ens_loss, test_idxs_losses, on = 'idx')
-                    test_merge_data['ens_value'] = test_merge_data['ens_value'] + test_merge_data['loss']
-                    test_merge_data['ens_st_value'] = test_merge_data['ens_st_value'] + test_merge_data['st_loss']
-                    test_ens_loss = test_merge_data[loss_column]
+            logger.removeHandler(file_handler)
 
 
-                train_auc = roc_auc_score(np.array(ens_loss['y']), np.array(ens_loss['ens_value']))
-                train_ap = average_precision_score(np.array(ens_loss['y']), np.array(ens_loss['ens_value']))
-                logger.info('\n ...Train_AUC value- Ens VAE: %0.4f' % train_auc)
-                logger.info('\n ...Train_PRAUC value- Ens VAE: %0.4f' % train_ap)
+            # Set up logging
+            logging.basicConfig(level=logging.INFO)
+            logger = logging.getLogger()
+            logger.setLevel(logging.INFO)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            log_file = save_dir + '/log_normal_class'+str(normal_class).replace('[','').replace(']','').replace(', ','_')+'_LoF.txt'
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setLevel(logging.INFO)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+            logger.info('-----------------------------------------------------------------')
+            logger.info('-----------------------------------------------------------------')
 
-                test_auc = roc_auc_score(np.array(test_ens_loss['y']), np.array(test_ens_loss['ens_value']))
-                test_ap = average_precision_score(np.array(test_ens_loss['y']), np.array(test_ens_loss['ens_value']))
-                logger.info('\n ...Test_AUC value- Ens VAE: %0.4f' %(test_auc))
-                logger.info('\n ...Test_PRAUC value- Ens VAE: %0.4f' %(test_ap))
 
-            logger.info('\n ...Final Train_AUC value of Ens VAE: %0.4f' %(train_auc))
-            logger.info('\n ...Final Train_PRAUC value of Ens VAE: %0.4f' %(train_ap))
-            train_auc_list.append(train_auc)
-            train_ap_list.append(train_ap)
+            clf = LocalOutlierFactor(novelty=True).fit(train_set)
+            train_losses = clf.negative_outlier_factor_
+            train_losses = train_losses * (-1)
 
-            logger.info('\n ...Final Test_AUC value of Ens VAE: %0.4f' %(test_auc))
-            logger.info('\n ...Final Test_PRAUC value of Ens VAE: %0.4f' %(test_ap))
-            logger.info('Running_time of InlierMem : %.4f' % (running_time))
-            test_auc_list.append(test_auc)
-            test_ap_list.append(test_ap)
-            ens_loss.to_csv(os.path.join(save_score_dir,'score_data.csv'),index=False)
-            test_ens_loss.to_csv(os.path.join(save_score_dir,'test_score_data.csv'),index=False)
+            auc_val = roc_auc_score(best_train_targets_list,train_losses)
+            ap_val = average_precision_score(best_train_targets_list, train_losses)
+            logger.info('train_auc: %.4f' % auc_val)
+            logger.info('train_ap: %.4f' % ap_val)
+
+            lof_train_auc_list.append(auc_val)
+            lof_train_ap_list.append(ap_val)
+            
+
+            test_losses = clf.score_samples(test_set)
+            test_losses = test_losses * (-1)
+            
+            auc_val = roc_auc_score(best_test_targets_list,test_losses)
+            ap_val = average_precision_score(best_test_targets_list, test_losses)
+            logger.info('test_auc: %.4f' % auc_val)
+            logger.info('test_ap: %.4f' % ap_val)
+            
+            lof_test_auc_list.append(auc_val)
+            lof_test_ap_list.append(ap_val)
+
+            logger.removeHandler(file_handler)
+            
+            # Set up logging
+            logging.basicConfig(level=logging.INFO)
+            logger = logging.getLogger()
+            logger.setLevel(logging.INFO)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            log_file = save_dir + '/log_normal_class'+str(normal_class).replace('[','').replace(']','').replace(', ','_')+'_IF.txt'
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setLevel(logging.INFO)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+            logger.info('-----------------------------------------------------------------')
+            logger.info('-----------------------------------------------------------------')
+
+
+            clf = IsolationForest(random_state=seed).fit(train_set)
+            train_losses = clf.score_samples(train_set)
+            train_losses = train_losses * (-1)
+
+            auc_val = roc_auc_score(best_train_targets_list,train_losses)
+            ap_val = average_precision_score(best_train_targets_list, train_losses)
+            logger.info('train_auc: %.4f' % auc_val)
+            logger.info('train_ap: %.4f' % ap_val)
+
+            if_train_auc_list.append(auc_val)
+            if_train_ap_list.append(ap_val)
+
+            test_losses = clf.score_samples(test_set)
+            test_losses = test_losses * (-1)
+            
+            auc_val = roc_auc_score(best_test_targets_list,test_losses)
+            ap_val = average_precision_score(best_test_targets_list, test_losses)
+            logger.info('test_auc: %.4f' % auc_val)
+            logger.info('test_ap: %.4f' % ap_val)
+            
+            if_test_auc_list.append(auc_val)
+            if_test_ap_list.append(ap_val)
+
             logger.removeHandler(file_handler)
             
         
-        train_auc_list.append(np.mean(train_auc_list))
-        train_auc_list.append(np.std(train_auc_list))
-        train_ap_list.append(np.mean(train_ap_list))
-        train_ap_list.append(np.std(train_ap_list))
-
-        class_train_df = pd.DataFrame({
-            'row_names' : row_name_list,
-            'train_auc' : train_auc_list,
-            'train_ap' : train_ap_list
-        })
-        class_train_df.set_index(keys = 'row_names', inplace = True)
-        try:
-            train_df = pd.concat([train_df, class_train_df], axis = 0)
-        except:
-            train_df = class_train_df
-
-        train_df.to_csv(os.path.join(save_metric_dir,'ODIM_train_result.csv'))
+        oc_train_auc_list.append(np.mean(oc_train_auc_list))
+        oc_train_auc_list.append(np.std(oc_train_auc_list))
+        oc_train_ap_list.append(np.mean(oc_train_ap_list))
+        oc_train_ap_list.append(np.std(oc_train_ap_list))
         
-        test_auc_list.append(np.mean(test_auc_list))
-        test_auc_list.append(np.std(test_auc_list))
-        test_ap_list.append(np.mean(test_ap_list))
-        test_ap_list.append(np.std(test_ap_list))
+        lof_train_auc_list.append(np.mean(lof_train_auc_list))
+        lof_train_auc_list.append(np.std(lof_train_auc_list))
+        lof_train_ap_list.append(np.mean(lof_train_ap_list))
+        lof_train_ap_list.append(np.std(lof_train_ap_list))
+        
+        if_train_auc_list.append(np.mean(if_train_auc_list))
+        if_train_auc_list.append(np.std(if_train_auc_list))
+        if_train_ap_list.append(np.mean(if_train_ap_list))
+        if_train_ap_list.append(np.std(if_train_ap_list))
 
-        class_test_df = pd.DataFrame({
+        oc_class_train_df = pd.DataFrame({
             'row_names' : row_name_list,
-            'test_auc' : test_auc_list,
-            'test_ap' : test_ap_list
+            'train_auc' : oc_train_auc_list,
+            'train_ap' : oc_train_ap_list
         })
-        class_test_df.set_index(keys = 'row_names', inplace = True)
+        oc_class_train_df.set_index(keys = 'row_names', inplace = True)
         try:
-            test_df = pd.concat([test_df, class_test_df], axis = 0)
+            oc_train_df = pd.concat([oc_train_df, oc_class_train_df], axis = 0)
         except:
-            test_df = class_test_df
+            oc_train_df = oc_class_train_df
+        oc_train_df.to_csv(os.path.join(save_metric_dir,'OneClassSVM_train_result.csv'))
+        
+        
+        lof_class_train_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'train_auc' : lof_train_auc_list,
+            'train_ap' : lof_train_ap_list
+        })
+        lof_class_train_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            lof_train_df = pd.concat([lof_train_df, lof_class_train_df], axis = 0)
+        except:
+            lof_train_df = lof_class_train_df
+        lof_train_df.to_csv(os.path.join(save_metric_dir,'LoF_train_result.csv'))
+        
+        if_class_train_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'train_auc' : if_train_auc_list,
+            'train_ap' : if_train_ap_list
+        })
+        if_class_train_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            if_train_df = pd.concat([if_train_df, if_class_train_df], axis = 0)
+        except:
+            if_train_df = if_class_train_df
+        if_train_df.to_csv(os.path.join(save_metric_dir,'iF_train_result.csv'))
+        
+        
+        #Test result
+        oc_test_auc_list.append(np.mean(oc_test_auc_list))
+        oc_test_auc_list.append(np.std(oc_test_auc_list))
+        oc_test_ap_list.append(np.mean(oc_test_ap_list))
+        oc_test_ap_list.append(np.std(oc_test_ap_list))
+        
+        lof_test_auc_list.append(np.mean(lof_test_auc_list))
+        lof_test_auc_list.append(np.std(lof_test_auc_list))
+        lof_test_ap_list.append(np.mean(lof_test_ap_list))
+        lof_test_ap_list.append(np.std(lof_test_ap_list))
+        
+        if_test_auc_list.append(np.mean(if_test_auc_list))
+        if_test_auc_list.append(np.std(if_test_auc_list))
+        if_test_ap_list.append(np.mean(if_test_ap_list))
+        if_test_ap_list.append(np.std(if_test_ap_list))
 
-        test_df.to_csv(os.path.join(save_metric_dir,'ODIM_test_result.csv'))
+        oc_class_test_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'test_auc' : oc_test_auc_list,
+            'test_ap' : oc_test_ap_list
+        })
+        oc_class_test_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            oc_test_df = pd.concat([oc_test_df, oc_class_test_df], axis = 0)
+        except:
+            oc_test_df = oc_class_test_df
+        oc_test_df.to_csv(os.path.join(save_metric_dir,'OneClassSVM_test_result.csv'))
+        
+        
+        lof_class_test_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'test_auc' : lof_test_auc_list,
+            'test_ap' : lof_test_ap_list
+        })
+        lof_class_test_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            lof_test_df = pd.concat([lof_test_df, lof_class_test_df], axis = 0)
+        except:
+            lof_test_df = lof_class_test_df
+        lof_test_df.to_csv(os.path.join(save_metric_dir,'LoF_test_result.csv'))
+        
+        if_class_test_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'test_auc' : if_test_auc_list,
+            'test_ap' : if_test_ap_list
+        })
+        if_class_test_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            if_test_df = pd.concat([if_test_df, if_class_test_df], axis = 0)
+        except:
+            if_test_df = if_class_test_df
+        if_test_df.to_csv(os.path.join(save_metric_dir,'iF_test_result.csv'))
+        
+        
 
 
 

@@ -3,6 +3,7 @@ import torch
 import logging
 import random
 import numpy as np
+import time
 
 from datasets.main import load_dataset
 from optim.prop_trainer import *
@@ -30,12 +31,15 @@ parser = argparse.ArgumentParser(description='ODIM Experiment')
 parser.add_argument('--use_cuda', type=bool, default=True)
 parser.add_argument('--gpu_num', type=int, default=1)
 parser.add_argument('--dataset_name', type=str, default='mnist')
+parser.add_argument('--batch_size', type=int, default=64)
 
 
 args = parser.parse_args()
 
-#gpu_num = 0
-#dataset_name = 'fmnist'
+#gpu_num = 3
+#dataset_name = '1_ALOI'
+#batch_size = 512
+#use_cuda = True
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 if __name__ == "__main__":
@@ -45,9 +49,11 @@ if __name__ == "__main__":
     use_cuda = args.use_cuda
     gpu_num = args.gpu_num
     dataset_name = args.dataset_name
+    batch_size = args.batch_size
     ratio_known_normal = 0.0
     ratio_known_outlier = 0.0
     n_known_outlier_classes = 0
+    
     data_path = '../data'
     if dataset_name == 'mnist':
         train_option = 'IWAE_alpha1._binarize'
@@ -199,9 +205,8 @@ if __name__ == "__main__":
         ratio_pollution = 0.1
         normal_class_list = [0,1,2,3,4]
         patience_thres = 300
-        
     
-    
+
     elif dataset_name == '1_ALOI':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
@@ -320,7 +325,6 @@ if __name__ == "__main__":
 
         seed_idx = 0
         nu = 0.1
-        batch_size = 64
         num_threads = 0
         n_jobs_dataloader = 0
         
@@ -342,9 +346,9 @@ if __name__ == "__main__":
 
             save_metric_dir = f'Results/{dataset_name}'
             os.makedirs(save_metric_dir, exist_ok=True)
-            save_dir = os.path.join(f'Results/{dataset_name}/ODIM',f'log{seed}')
+            save_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}',f'log{seed}')
             os.makedirs(save_dir, exist_ok=True)
-            save_score_dir = os.path.join(f'Results/{dataset_name}/ODIM',f'score{seed}')
+            save_score_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}',f'score{seed}')
             os.makedirs(save_score_dir, exist_ok=True)
             
 
@@ -438,7 +442,7 @@ if __name__ == "__main__":
 
                 logger.info('Set model seed to %d.' % (model_seed))
                 ## step 1
-                train_idxs_losses, test_idxs_losses, running_time = odim(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option)
+                train_idxs_losses, test_idxs_losses, running_time = odim_light(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option)
                 train_me_losses = (train_idxs_losses.to_numpy())[:,1]
                 st_train_me_losses = (train_me_losses - train_me_losses.mean())/train_me_losses.std()
                 train_idxs_losses['st_loss'] = st_train_me_losses
@@ -455,7 +459,6 @@ if __name__ == "__main__":
                 fpr, tpr, thresholds = metrics.roc_curve(np.array(add_label_idx_test_losses['y']), np.array(add_label_idx_test_losses['loss']), pos_label=1)
                 roc_auc = metrics.auc(fpr, tpr)
                 logger.info('\n...Test_AUC value- VAE: %0.4f' %(roc_auc))
-
 
                 if model_iter == 0:
                     ens_loss = add_label_idx_losses
@@ -498,7 +501,7 @@ if __name__ == "__main__":
             ens_loss.to_csv(os.path.join(save_score_dir,'score_data.csv'),index=False)
             test_ens_loss.to_csv(os.path.join(save_score_dir,'test_score_data.csv'),index=False)
             logger.removeHandler(file_handler)
-            
+        
         
         train_auc_list.append(np.mean(train_auc_list))
         train_auc_list.append(np.std(train_auc_list))
@@ -516,7 +519,7 @@ if __name__ == "__main__":
         except:
             train_df = class_train_df
 
-        train_df.to_csv(os.path.join(save_metric_dir,'ODIM_train_result.csv'))
+        train_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_train_result.csv'))
         
         test_auc_list.append(np.mean(test_auc_list))
         test_auc_list.append(np.std(test_auc_list))
@@ -534,7 +537,7 @@ if __name__ == "__main__":
         except:
             test_df = class_test_df
 
-        test_df.to_csv(os.path.join(save_metric_dir,'ODIM_test_result.csv'))
+        test_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_test_result.csv'))
 
 
 
