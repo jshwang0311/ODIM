@@ -5,32 +5,22 @@ import numpy as np
 
 
 dataset_list = [
-                '1_ALOI', '3_backdoor', '5_campaign', '7_Cardiotocography', 
-                '8_celeba', '9_census', '11_donors', '13_fraud', '19_landsat', '22_magic.gamma', 
-                '27_PageBlocks', '33_skin', '35_SpamBase', '41_Waveform'
+                'annthyroid', 'breastw', 'cover', 'glass', 'ionosphere', 'letter', 'mammography', 'musk', 'optdigits',
+                'pendigits', 'pima', 'speech', 'vertebral', 'vowels', 'wbc', 'arrhythmia', 'cardio', 'satellite', 
+                'satimage-2', 'shuttle', 'thyroid'
                ]
 
 result_dir_path = '/home/x1112480/ODIM/Results'
 tr_file_name_list = [
-                'ODIM_light512_train_result.csv',
-                'OneClassSVM_train_result.csv',
-                'LoF_train_result.csv',
-                'iF_train_result.csv',
                 'COPOD_train_result.csv',
-                'ECOD_train_result.csv',
-                'deepSVDD_%s_mlp_train_result.csv'
+                'ECOD_train_result.csv'
                 ]
 ts_file_name_list = [
-                'ODIM_light512_test_result.csv',
-                'OneClassSVM_test_result.csv',
-                'LoF_test_result.csv',
-                'iF_test_result.csv',
                 'COPOD_test_result.csv',
-                'ECOD_test_result.csv',
-                'deepSVDD_%s_mlp_test_result.csv'
+                'ECOD_test_result.csv'
                 ]
 
-col_name_list = ['ODIM','OneClassSVM','LoF','iF','COPOD','ECOD', 'deepSVDD']
+col_name_list = ['COPOD','ECOD']
 
 total_tr_result_list = []
 total_ts_result_list = []
@@ -119,5 +109,5 @@ for i in range(len(colname)):
     if'_test_auc' not in colname[i]:
         ts_reorder_colname.append(colname[i])
 
-total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_tabular_summary.csv'))
-total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_tabular_summary.csv'))
+total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_tabular_summary_recent.csv'))
+total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_tabular_summary_recent.csv'))

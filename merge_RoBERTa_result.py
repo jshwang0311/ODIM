@@ -5,32 +5,38 @@ import numpy as np
 
 
 dataset_list = [
-                '1_ALOI', '3_backdoor', '5_campaign', '7_Cardiotocography', 
-                '8_celeba', '9_census', '11_donors', '13_fraud', '19_landsat', '22_magic.gamma', 
-                '27_PageBlocks', '33_skin', '35_SpamBase', '41_Waveform'
+                '20news_0', '20news_1', '20news_2', '20news_3', '20news_4', '20news_5', 'agnews_0', 'agnews_1', 'agnews_2', 'agnews_3', 'amazon', 'imdb', 'yelp'
                ]
 
 result_dir_path = '/home/x1112480/ODIM/Results'
 tr_file_name_list = [
-                'ODIM_light512_train_result.csv',
-                'OneClassSVM_train_result.csv',
-                'LoF_train_result.csv',
-                'iF_train_result.csv',
-                'COPOD_train_result.csv',
-                'ECOD_train_result.csv',
-                'deepSVDD_%s_mlp_train_result.csv'
+                'ODIM_light512_AD_RoBERTa_mlp_vae_gaussian_train_result.csv',
+                'ODIM_light512_AD_RoBERTa256_mlp_vae_gaussian_train_result.csv',
+                'ODIM_light512_AD_RoBERTa512_mlp_vae_gaussian_train_result.csv',
+                'OneClassSVM_train_result_AD_RoBERTa256.csv',
+                'LoF_train_result_AD_RoBERTa256.csv',
+                'iF_train_result_AD_RoBERTa256.csv',
+                'COPOD_train_result_AD_RoBERTa256.csv',
+                'ECOD_train_result_AD_RoBERTa256.csv',
+                'deepSVDD_AD_RoBERTa_mlp_train_result.csv',
+                'deepSVDD_AD_RoBERTa256_mlp_train_result.csv',
+                'deepSVDD_AD_RoBERTa512_mlp_train_result.csv'
                 ]
 ts_file_name_list = [
-                'ODIM_light512_test_result.csv',
-                'OneClassSVM_test_result.csv',
-                'LoF_test_result.csv',
-                'iF_test_result.csv',
-                'COPOD_test_result.csv',
-                'ECOD_test_result.csv',
-                'deepSVDD_%s_mlp_test_result.csv'
+                'ODIM_light512_AD_RoBERTa_mlp_vae_gaussian_test_result.csv',
+                'ODIM_light512_AD_RoBERTa256_mlp_vae_gaussian_test_result.csv',
+                'ODIM_light512_AD_RoBERTa512_mlp_vae_gaussian_test_result.csv',
+                'OneClassSVM_test_result_AD_RoBERTa256.csv',
+                'LoF_test_result_AD_RoBERTa256.csv',
+                'iF_test_result_AD_RoBERTa256.csv',
+                'COPOD_test_result_AD_RoBERTa256.csv',
+                'ECOD_test_result_AD_RoBERTa256.csv',
+                'deepSVDD_AD_RoBERTa_mlp_test_result.csv',
+                'deepSVDD_AD_RoBERTa256_mlp_test_result.csv',
+                'deepSVDD_AD_RoBERTa512_mlp_test_result.csv'
                 ]
 
-col_name_list = ['ODIM','OneClassSVM','LoF','iF','COPOD','ECOD', 'deepSVDD']
+col_name_list = ['ODIM','ODIM256','ODIM512','OneClassSVM','LoF','iF','COPOD','ECOD','deepSVDD','deepSVDD256','deepSVDD512']
 
 total_tr_result_list = []
 total_ts_result_list = []
@@ -40,9 +46,6 @@ for dataset in dataset_list:
     for file_idx in range(len(tr_file_name_list)):
         tr_file_name = tr_file_name_list[file_idx]
         ts_file_name = ts_file_name_list[file_idx]
-        if '%s' in tr_file_name:
-            tr_file_name = tr_file_name % (dataset)
-            ts_file_name = ts_file_name % (dataset)
         col_name = col_name_list[file_idx]
         try:
             file_name = os.path.join(result_dir_path, dataset,tr_file_name)
@@ -73,13 +76,13 @@ for dataset in dataset_list:
             result['row_names'] = result['row_names'].str.replace('Class0', dataset)
             result['row_names'] = result['row_names'].str.replace('Average', dataset+'_Average')
             result = result.set_index('row_names')
+            if file_idx==0:
+                test_template = pd.DataFrame(columns = result.columns, index = result.index)
+            result.columns = col_name + '_' + result.columns
             if ('OneClassSVM' in tr_file_name) or ('LoF' in tr_file_name):
                 for index in result.index:
                     if ('simulation' in index) or ('Std' in index):
                         result.loc[index] = np.nan
-            if file_idx==0:
-                test_template = pd.DataFrame(columns = result.columns, index = result.index)
-            result.columns = col_name + '_' + result.columns
             try:
                 total_ts_result = pd.concat([total_ts_result,result], axis = 1)
             except:
@@ -119,5 +122,5 @@ for i in range(len(colname)):
     if'_test_auc' not in colname[i]:
         ts_reorder_colname.append(colname[i])
 
-total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_tabular_summary.csv'))
-total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_tabular_summary.csv'))
+total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_RoBERTa_summary.csv'))
+total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_RoBERTa_summary.csv'))

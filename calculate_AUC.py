@@ -300,6 +300,34 @@ if __name__ == "__main__":
         ratio_pollution = 0.029
         normal_class_list = [0]
         patience_thres = 100
+    elif 'CIFAR10' in dataset_name:
+        data_path = '../ADBench/datasets/CV_by_ViT'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'AD_image_mlp_vae_gaussian'
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'MNIST-C' in dataset_name:
+        data_path = '../ADBench/datasets/CV_by_ViT'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'AD_image_mlp_vae_gaussian'
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'MVTec-AD' in dataset_name:
+        data_path = '../ADBench/datasets/CV_by_ViT'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'AD_image_mlp_vae_gaussian'
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'SVHN' in dataset_name:
+        data_path = '../ADBench/datasets/CV_by_ViT'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'AD_image_mlp_vae_gaussian'
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
 
 
     data_seed_list = [110,120,130,140,150]

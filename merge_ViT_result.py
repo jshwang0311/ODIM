@@ -5,32 +5,34 @@ import numpy as np
 
 
 dataset_list = [
-                '1_ALOI', '3_backdoor', '5_campaign', '7_Cardiotocography', 
-                '8_celeba', '9_census', '11_donors', '13_fraud', '19_landsat', '22_magic.gamma', 
-                '27_PageBlocks', '33_skin', '35_SpamBase', '41_Waveform'
+                'CIFAR10_0', 'CIFAR10_1', 'CIFAR10_2', 'CIFAR10_3', 'CIFAR10_4', 'CIFAR10_5', 'CIFAR10_6', 'CIFAR10_7', 'CIFAR10_8', 'CIFAR10_9', 'MNIST-C_brightness', 'MNIST-C_canny_edges', 'MNIST-C_dotted_line', 'MNIST-C_fog', 'MNIST-C_glass_blur', 'MNIST-C_identity', 'MNIST-C_impulse_noise', 'MNIST-C_motion_blur', 'MNIST-C_rotate', 'MNIST-C_scale', 'MNIST-C_shear', 'MNIST-C_shot_noise', 'MNIST-C_spatter', 'MNIST-C_stripe', 'MNIST-C_translate', 'MNIST-C_zigzag', 'MVTec-AD_bottle', 'MVTec-AD_cable', 'MVTec-AD_capsule', 'MVTec-AD_carpet', 'MVTec-AD_grid', 'MVTec-AD_hazelnut', 'MVTec-AD_leather', 'MVTec-AD_metal_nut', 'MVTec-AD_pill', 'MVTec-AD_screw', 'MVTec-AD_tile', 'MVTec-AD_toothbrush', 'MVTec-AD_transistor', 'MVTec-AD_wood', 'MVTec-AD_zipper', 'SVHN_0', 'SVHN_1', 'SVHN_2', 'SVHN_3', 'SVHN_4', 'SVHN_5', 'SVHN_6', 'SVHN_7', 'SVHN_8', 'SVHN_9'
                ]
 
 result_dir_path = '/home/x1112480/ODIM/Results'
 tr_file_name_list = [
-                'ODIM_light512_train_result.csv',
-                'OneClassSVM_train_result.csv',
-                'LoF_train_result.csv',
-                'iF_train_result.csv',
-                'COPOD_train_result.csv',
-                'ECOD_train_result.csv',
-                'deepSVDD_%s_mlp_train_result.csv'
+                'ODIM_light512_AD_ViT_mlp_vae_gaussian_train_result.csv',
+                'ODIM_light512_AD_ViT256_mlp_vae_gaussian_train_result.csv',
+                'ODIM_light512_AD_ViT512_mlp_vae_gaussian_train_result.csv',
+                'OneClassSVM_train_result_AD_VResNet.csv',
+                'LoF_train_result_AD_ViT.csv',
+                'iF_train_result_AD_ViT.csv',
+                'COPOD_train_result_AD_ViT.csv',
+                'ECOD_train_result_AD_ViT.csv',
+                'deepSVDD_AD_ViT_mlp_train_result.csv'
                 ]
 ts_file_name_list = [
-                'ODIM_light512_test_result.csv',
-                'OneClassSVM_test_result.csv',
-                'LoF_test_result.csv',
-                'iF_test_result.csv',
-                'COPOD_test_result.csv',
-                'ECOD_test_result.csv',
-                'deepSVDD_%s_mlp_test_result.csv'
+                'ODIM_light512_AD_ViT_mlp_vae_gaussian_test_result.csv',
+                'ODIM_light512_AD_ViT256_mlp_vae_gaussian_test_result.csv',
+                'ODIM_light512_AD_ViT512_mlp_vae_gaussian_test_result.csv',
+                'OneClassSVM_test_result_AD_ViT.csv',
+                'LoF_test_result_AD_ViT.csv',
+                'iF_test_result_AD_ViT.csv',
+                'COPOD_test_result_AD_ViT.csv',
+                'ECOD_test_result_AD_ViT.csv',
+                'deepSVDD_AD_ViT_mlp_test_result.csv'
                 ]
 
-col_name_list = ['ODIM','OneClassSVM','LoF','iF','COPOD','ECOD', 'deepSVDD']
+col_name_list = ['ODIM','ODIM256','ODIM512','OneClassSVM','LoF','iF','COPOD','ECOD','deepSVDD']
 
 total_tr_result_list = []
 total_ts_result_list = []
@@ -40,9 +42,6 @@ for dataset in dataset_list:
     for file_idx in range(len(tr_file_name_list)):
         tr_file_name = tr_file_name_list[file_idx]
         ts_file_name = ts_file_name_list[file_idx]
-        if '%s' in tr_file_name:
-            tr_file_name = tr_file_name % (dataset)
-            ts_file_name = ts_file_name % (dataset)
         col_name = col_name_list[file_idx]
         try:
             file_name = os.path.join(result_dir_path, dataset,tr_file_name)
@@ -50,13 +49,13 @@ for dataset in dataset_list:
             result['row_names'] = result['row_names'].str.replace('Class0', dataset)
             result['row_names'] = result['row_names'].str.replace('Average', dataset+'_Average')
             result = result.set_index('row_names')
-            if file_idx==0:
-                train_template = pd.DataFrame(columns = result.columns, index = result.index)
-            result.columns = col_name + '_' + result.columns
             if ('OneClassSVM' in tr_file_name) or ('LoF' in tr_file_name):
                 for index in result.index:
                     if ('simulation' in index) or ('Std' in index):
                         result.loc[index] = np.nan
+            if file_idx==0:
+                train_template = pd.DataFrame(columns = result.columns, index = result.index)
+            result.columns = col_name + '_' + result.columns
             try:
                 total_tr_result = pd.concat([total_tr_result,result], axis = 1)
             except:
@@ -119,5 +118,5 @@ for i in range(len(colname)):
     if'_test_auc' not in colname[i]:
         ts_reorder_colname.append(colname[i])
 
-total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_tabular_summary.csv'))
-total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_tabular_summary.csv'))
+total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_ViT_summary.csv'))
+total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_ViT_summary.csv'))

@@ -17,6 +17,8 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
 from sklearn.neighbors import LocalOutlierFactor
+from pyod.models.ecod import ECOD
+from pyod.models.copod import COPOD
 
 
 import argparse
@@ -32,15 +34,16 @@ parser = argparse.ArgumentParser(description='ODIM Experiment')
 parser.add_argument('--use_cuda', type=bool, default=False)
 parser.add_argument('--gpu_num', type=int, default=1)
 parser.add_argument('--dataset_name', type=str, default='mnist')
+parser.add_argument('--filter_net_name', type=str, default='')
+parser.add_argument('--data_path', type=str, default='')
 
 
 args = parser.parse_args()
 
 #gpu_num = 0
 #dataset_name = 'fmnist'
-gpu_num = 0
-dataset_name = '11_donors'
-use_cuda = True
+#gpu_num = 0
+#dataset_name = '9_census'
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 if __name__ == "__main__":
@@ -305,10 +308,75 @@ if __name__ == "__main__":
         ratio_pollution = 0.029
         normal_class_list = [0]
         patience_thres = 100
+        
+    elif 'CIFAR10' in dataset_name:
+        data_path = args.data_path
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = args.filter_net_name
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'MNIST-C' in dataset_name:
+        data_path = args.data_path
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = args.filter_net_name
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'MVTec-AD' in dataset_name:
+        data_path = args.data_path
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = args.filter_net_name
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'SVHN' in dataset_name:
+        data_path = args.data_path
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = args.filter_net_name
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
 
+    
+    elif '20news' in dataset_name:
+        data_path = args.data_path
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = args.filter_net_name
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100    
+    elif 'agnews' in dataset_name:
+        data_path = args.data_path
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = args.filter_net_name
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100    
+    elif 'amazon' in dataset_name:
+        data_path = args.data_path
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = args.filter_net_name
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'imdb' in dataset_name:
+        data_path = args.data_path
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = args.filter_net_name
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100  
+    elif 'yelp' in dataset_name:
+        data_path = args.data_path
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = args.filter_net_name
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100  
+        
 
     data_seed_list = [110,120,130,140,150]
-    #data_seed_list = [130,140,150]
     start_model_seed = 1234
     n_ens = 10
     for normal_class_idx in range(len(normal_class_list)):
@@ -353,6 +421,16 @@ if __name__ == "__main__":
         if_train_ap_list = []
         if_test_auc_list = []
         if_test_ap_list = []
+        
+        ecod_train_auc_list = []
+        ecod_train_ap_list = []
+        ecod_test_auc_list = []
+        ecod_test_ap_list = []
+        
+        copod_train_auc_list = []
+        copod_train_ap_list = []
+        copod_test_auc_list = []
+        copod_test_ap_list = []
         for seed_idx in range(len(data_seed_list)):
             seed = data_seed_list[seed_idx]
 
@@ -548,6 +626,84 @@ if __name__ == "__main__":
             if_test_ap_list.append(ap_val)
 
             logger.removeHandler(file_handler)
+            
+            # Set up logging
+            logging.basicConfig(level=logging.INFO)
+            logger = logging.getLogger()
+            logger.setLevel(logging.INFO)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            log_file = save_dir + '/log_'+dataset_name+'_trainOption'+ train_option + '_normal' + str(normal_class) +'.txt'
+            log_file = save_dir + '/log_normal_class'+str(normal_class).replace('[','').replace(']','').replace(', ','_')+'_ecod.txt'
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setLevel(logging.INFO)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+            logger.info('-----------------------------------------------------------------')
+            logger.info('-----------------------------------------------------------------')
+            
+            clf = ECOD().fit(train_set)
+            train_losses = clf.decision_scores_
+            #train_losses = clf.decision_function(train_set)
+            #train_losses = train_losses * (-1)
+            
+            auc_val = roc_auc_score(best_train_targets_list,train_losses)
+            ap_val = average_precision_score(best_train_targets_list, train_losses)
+            logger.info('train_auc: %.4f' % auc_val)
+            logger.info('train_ap: %.4f' % ap_val)
+            
+            ecod_train_auc_list.append(auc_val)
+            ecod_train_ap_list.append(ap_val)
+            
+            auc_val = roc_auc_score(best_test_targets_list,test_losses)
+            ap_val = average_precision_score(best_test_targets_list, test_losses)
+            logger.info('test_auc: %.4f' % auc_val)
+            logger.info('test_ap: %.4f' % ap_val)
+            
+            ecod_test_auc_list.append(auc_val)
+            ecod_test_ap_list.append(ap_val)
+
+            logger.removeHandler(file_handler)
+            
+            
+            # Set up logging
+            logging.basicConfig(level=logging.INFO)
+            logger = logging.getLogger()
+            logger.setLevel(logging.INFO)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            log_file = save_dir + '/log_normal_class'+str(normal_class).replace('[','').replace(']','').replace(', ','_')+'_LoF.txt'
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setLevel(logging.INFO)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+            logger.info('-----------------------------------------------------------------')
+            logger.info('-----------------------------------------------------------------')
+
+
+            clf = COPOD().fit(train_set)
+            train_losses = clf.decision_scores_
+            #train_losses = train_losses * (-1)
+
+            auc_val = roc_auc_score(best_train_targets_list,train_losses)
+            ap_val = average_precision_score(best_train_targets_list, train_losses)
+            logger.info('train_auc: %.4f' % auc_val)
+            logger.info('train_ap: %.4f' % ap_val)
+
+            copod_train_auc_list.append(auc_val)
+            copod_train_ap_list.append(ap_val)
+            
+
+            test_losses = clf.decision_function(test_set)
+            #test_losses = test_losses * (-1)
+            
+            auc_val = roc_auc_score(best_test_targets_list,test_losses)
+            ap_val = average_precision_score(best_test_targets_list, test_losses)
+            logger.info('test_auc: %.4f' % auc_val)
+            logger.info('test_ap: %.4f' % ap_val)
+            
+            copod_test_auc_list.append(auc_val)
+            copod_test_ap_list.append(ap_val)
+
+            logger.removeHandler(file_handler)
         
         
         oc_train_auc_list.append(np.mean(oc_train_auc_list))
@@ -564,6 +720,43 @@ if __name__ == "__main__":
         if_train_auc_list.append(np.std(if_train_auc_list))
         if_train_ap_list.append(np.mean(if_train_ap_list))
         if_train_ap_list.append(np.std(if_train_ap_list))
+        
+        ecod_train_auc_list.append(np.mean(ecod_train_auc_list))
+        ecod_train_auc_list.append(np.std(ecod_train_auc_list))
+        ecod_train_ap_list.append(np.mean(ecod_train_ap_list))
+        ecod_train_ap_list.append(np.std(ecod_train_ap_list))
+        
+        copod_train_auc_list.append(np.mean(copod_train_auc_list))
+        copod_train_auc_list.append(np.std(copod_train_auc_list))
+        copod_train_ap_list.append(np.mean(copod_train_ap_list))
+        copod_train_ap_list.append(np.std(copod_train_ap_list))
+        
+        ecod_class_train_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'train_auc' : ecod_train_auc_list,
+            'train_ap' : ecod_train_ap_list
+        })
+        ecod_class_train_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            ecod_train_df = pd.concat([ecod_train_df, ecod_class_train_df], axis = 0)
+        except:
+            ecod_train_df = ecod_class_train_df
+        ecod_train_df.to_csv(os.path.join(save_metric_dir,f'ECOD_train_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))
+        
+        
+        copod_class_train_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'train_auc' : copod_train_auc_list,
+            'train_ap' : copod_train_ap_list
+        })
+        copod_class_train_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            copod_train_df = pd.concat([copod_train_df, copod_class_train_df], axis = 0)
+        except:
+            copod_train_df = copod_class_train_df
+        copod_train_df.to_csv(os.path.join(save_metric_dir,f'COPOD_train_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))
+        
+        
 
         oc_class_train_df = pd.DataFrame({
             'row_names' : row_name_list,
@@ -575,7 +768,7 @@ if __name__ == "__main__":
             oc_train_df = pd.concat([oc_train_df, oc_class_train_df], axis = 0)
         except:
             oc_train_df = oc_class_train_df
-        oc_train_df.to_csv(os.path.join(save_metric_dir,'OneClassSVM_train_result.csv'))
+        oc_train_df.to_csv(os.path.join(save_metric_dir,f'OneClassSVM_train_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))
         
         
         lof_class_train_df = pd.DataFrame({
@@ -588,7 +781,7 @@ if __name__ == "__main__":
             lof_train_df = pd.concat([lof_train_df, lof_class_train_df], axis = 0)
         except:
             lof_train_df = lof_class_train_df
-        lof_train_df.to_csv(os.path.join(save_metric_dir,'LoF_train_result.csv'))
+        lof_train_df.to_csv(os.path.join(save_metric_dir,f'LoF_train_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))
         
         if_class_train_df = pd.DataFrame({
             'row_names' : row_name_list,
@@ -600,7 +793,7 @@ if __name__ == "__main__":
             if_train_df = pd.concat([if_train_df, if_class_train_df], axis = 0)
         except:
             if_train_df = if_class_train_df
-        if_train_df.to_csv(os.path.join(save_metric_dir,'iF_train_result.csv'))
+        if_train_df.to_csv(os.path.join(save_metric_dir,f'iF_train_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))
         
         
         #Test result
@@ -618,6 +811,42 @@ if __name__ == "__main__":
         if_test_auc_list.append(np.std(if_test_auc_list))
         if_test_ap_list.append(np.mean(if_test_ap_list))
         if_test_ap_list.append(np.std(if_test_ap_list))
+        
+        ecod_test_auc_list.append(np.mean(ecod_test_auc_list))
+        ecod_test_auc_list.append(np.std(ecod_test_auc_list))
+        ecod_test_ap_list.append(np.mean(ecod_test_ap_list))
+        ecod_test_ap_list.append(np.std(ecod_test_ap_list))
+        
+        copod_test_auc_list.append(np.mean(copod_test_auc_list))
+        copod_test_auc_list.append(np.std(copod_test_auc_list))
+        copod_test_ap_list.append(np.mean(copod_test_ap_list))
+        copod_test_ap_list.append(np.std(copod_test_ap_list))
+
+        ecod_class_test_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'test_auc' : ecod_test_auc_list,
+            'test_ap' : ecod_test_ap_list
+        })
+        ecod_class_test_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            ecod_test_df = pd.concat([ecod_test_df, ecod_class_test_df], axis = 0)
+        except:
+            ecod_test_df = ecod_class_test_df
+        ecod_test_df.to_csv(os.path.join(save_metric_dir,f'ECOD_test_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))
+        
+        
+        copod_class_test_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'test_auc' : copod_test_auc_list,
+            'test_ap' : copod_test_ap_list
+        })
+        copod_class_test_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            copod_test_df = pd.concat([copod_test_df, copod_class_test_df], axis = 0)
+        except:
+            copod_test_df = copod_class_test_df
+        copod_test_df.to_csv(os.path.join(save_metric_dir,f'COPOD_test_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))  
+        
 
         oc_class_test_df = pd.DataFrame({
             'row_names' : row_name_list,
@@ -629,7 +858,7 @@ if __name__ == "__main__":
             oc_test_df = pd.concat([oc_test_df, oc_class_test_df], axis = 0)
         except:
             oc_test_df = oc_class_test_df
-        oc_test_df.to_csv(os.path.join(save_metric_dir,'OneClassSVM_test_result.csv'))
+        oc_test_df.to_csv(os.path.join(save_metric_dir,f'OneClassSVM_test_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))
         
         
         lof_class_test_df = pd.DataFrame({
@@ -642,7 +871,7 @@ if __name__ == "__main__":
             lof_test_df = pd.concat([lof_test_df, lof_class_test_df], axis = 0)
         except:
             lof_test_df = lof_class_test_df
-        lof_test_df.to_csv(os.path.join(save_metric_dir,'LoF_test_result.csv'))
+        lof_test_df.to_csv(os.path.join(save_metric_dir,f'LoF_test_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))
         
         if_class_test_df = pd.DataFrame({
             'row_names' : row_name_list,
@@ -654,7 +883,7 @@ if __name__ == "__main__":
             if_test_df = pd.concat([if_test_df, if_class_test_df], axis = 0)
         except:
             if_test_df = if_class_test_df
-        if_test_df.to_csv(os.path.join(save_metric_dir,'iF_test_result.csv'))
+        if_test_df.to_csv(os.path.join(save_metric_dir,f'iF_test_result_{filter_net_name.replace("_mlp_vae_gaussian","")}.csv'))
         
         
 

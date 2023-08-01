@@ -3,19 +3,22 @@ import torch
 import logging
 import random
 import numpy as np
-import time
+import pandas as pd
 
 from datasets.main import load_dataset
-from optim.prop_trainer import *
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
 
 
-from sklearn.mixture import GaussianMixture
-from sklearn.preprocessing import MinMaxScaler
 from sklearn import metrics
 from sklearn.metrics import roc_auc_score, average_precision_score
+
+from sklearn.ensemble import IsolationForest
+from sklearn.svm import OneClassSVM
+from sklearn.neighbors import LocalOutlierFactor
+from pyod.models.ecod import ECOD
+from pyod.models.copod import COPOD
 
 
 import argparse
@@ -28,23 +31,17 @@ import argparse
 
 parser = argparse.ArgumentParser(description='ODIM Experiment')
 # arguments for optimization
-parser.add_argument('--use_cuda', type=bool, default=True)
+parser.add_argument('--use_cuda', type=bool, default=False)
 parser.add_argument('--gpu_num', type=int, default=1)
 parser.add_argument('--dataset_name', type=str, default='mnist')
-parser.add_argument('--batch_size', type=int, default=64)
-parser.add_argument('--filter_net_name', type=str, default='')
-parser.add_argument('--data_path', type=str, default='')
 
 
 args = parser.parse_args()
 
-# gpu_num = 0
-# dataset_name = '20news_0'
-# batch_size = 512
-# use_cuda = True
-# filter_net_name = 'AD_NLP_mlp_vae_gaussian'
-# data_path = '../ADBench/datasets/NLP_by_RoBERTa'
-#data_path = '../ADBench/datasets/NLP_by_BERT'
+#gpu_num = 0
+#dataset_name = 'fmnist'
+#gpu_num = 0
+#dataset_name = '9_census'
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 if __name__ == "__main__":
@@ -54,11 +51,9 @@ if __name__ == "__main__":
     use_cuda = args.use_cuda
     gpu_num = args.gpu_num
     dataset_name = args.dataset_name
-    batch_size = args.batch_size
     ratio_known_normal = 0.0
     ratio_known_outlier = 0.0
     n_known_outlier_classes = 0
-    
     data_path = '../data'
     if dataset_name == 'mnist':
         train_option = 'IWAE_alpha1._binarize'
@@ -210,8 +205,9 @@ if __name__ == "__main__":
         ratio_pollution = 0.1
         normal_class_list = [0,1,2,3,4]
         patience_thres = 300
+        
     
-
+    
     elif dataset_name == '1_ALOI':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
@@ -310,74 +306,6 @@ if __name__ == "__main__":
         ratio_pollution = 0.029
         normal_class_list = [0]
         patience_thres = 100
-    elif 'CIFAR10' in dataset_name:
-        data_path = args.data_path
-        train_option = 'IWAE_alpha1.'
-        filter_net_name = args.filter_net_name
-        ratio_pollution = 0.05
-        normal_class_list = [0]
-        patience_thres = 100
-    elif 'MNIST-C' in dataset_name:
-        data_path = args.data_path
-        train_option = 'IWAE_alpha1.'
-        filter_net_name = args.filter_net_name
-        ratio_pollution = 0.05
-        normal_class_list = [0]
-        patience_thres = 100
-    elif 'MVTec-AD' in dataset_name:
-        data_path = args.data_path
-        train_option = 'IWAE_alpha1.'
-        filter_net_name = args.filter_net_name
-        ratio_pollution = 0.05
-        normal_class_list = [0]
-        patience_thres = 100
-    elif 'SVHN' in dataset_name:
-        data_path = args.data_path
-        train_option = 'IWAE_alpha1.'
-        filter_net_name = args.filter_net_name
-        ratio_pollution = 0.05
-        normal_class_list = [0]
-        patience_thres = 100
-
-        
-    elif '20news' in dataset_name:
-        data_path = args.data_path
-        train_option = 'IWAE_alpha1.'
-        filter_net_name = args.filter_net_name
-        ratio_pollution = 0.05
-        normal_class_list = [0]
-        patience_thres = 100    
-    elif 'agnews' in dataset_name:
-        data_path = args.data_path
-        train_option = 'IWAE_alpha1.'
-        filter_net_name = args.filter_net_name
-        ratio_pollution = 0.05
-        normal_class_list = [0]
-        patience_thres = 100    
-    elif 'amazon' in dataset_name:
-        data_path = args.data_path
-        train_option = 'IWAE_alpha1.'
-        filter_net_name = args.filter_net_name
-        ratio_pollution = 0.05
-        normal_class_list = [0]
-        patience_thres = 100
-    elif 'imdb' in dataset_name:
-        data_path = args.data_path
-        train_option = 'IWAE_alpha1.'
-        filter_net_name = args.filter_net_name
-        ratio_pollution = 0.05
-        normal_class_list = [0]
-        patience_thres = 100  
-    elif 'yelp' in dataset_name:
-        data_path = args.data_path
-        train_option = 'IWAE_alpha1.'
-        filter_net_name = args.filter_net_name
-        ratio_pollution = 0.05
-        normal_class_list = [0]
-        patience_thres = 100  
-        
-    
-        
 
 
     data_seed_list = [110,120,130,140,150]
@@ -391,13 +319,14 @@ if __name__ == "__main__":
         # Default device to 'cpu' if cuda is not available
         if not torch.cuda.is_available():
             device = 'cpu'
-
-        torch.cuda.set_device(gpu_num)
-        print('Current number of the GPU is %d'%torch.cuda.current_device())
+        else:
+            torch.cuda.set_device(gpu_num)
+            print('Current number of the GPU is %d'%torch.cuda.current_device())
 
 
         seed_idx = 0
         nu = 0.1
+        batch_size = 100000
         num_threads = 0
         n_jobs_dataloader = 0
         
@@ -409,19 +338,25 @@ if __name__ == "__main__":
         row_name_list.append(row_name)
         row_name = f'Std'
         row_name_list.append(row_name)
-        train_auc_list = []
-        train_ap_list = []
-        test_auc_list = []
-        test_ap_list = []
+        
+        ecod_train_auc_list = []
+        ecod_train_ap_list = []
+        ecod_test_auc_list = []
+        ecod_test_ap_list = []
+        
+        copod_train_auc_list = []
+        copod_train_ap_list = []
+        copod_test_auc_list = []
+        copod_test_ap_list = []
         
         for seed_idx in range(len(data_seed_list)):
             seed = data_seed_list[seed_idx]
 
             save_metric_dir = f'Results/{dataset_name}'
             os.makedirs(save_metric_dir, exist_ok=True)
-            save_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}',f'log{seed}')
+            save_dir = os.path.join(f'Results/{dataset_name}/ODIM',f'log{seed}')
             os.makedirs(save_dir, exist_ok=True)
-            save_score_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}',f'score{seed}')
+            save_score_dir = os.path.join(f'Results/{dataset_name}/ODIM',f'score{seed}')
             os.makedirs(save_score_dir, exist_ok=True)
             
 
@@ -432,6 +367,7 @@ if __name__ == "__main__":
             logger.setLevel(logging.INFO)
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             log_file = save_dir + '/log_'+dataset_name+'_trainOption'+ train_option + '_normal' + str(normal_class) +'.txt'
+            log_file = save_dir + '/log_normal_class'+str(normal_class).replace('[','').replace(']','').replace(', ','_')+'_ecod.txt'
             file_handler = logging.FileHandler(log_file)
             file_handler.setLevel(logging.INFO)
             file_handler.setFormatter(formatter)
@@ -479,138 +415,171 @@ if __name__ == "__main__":
             np.random.seed(seed)
             torch.manual_seed(seed)
             torch.cuda.manual_seed(seed)
-            train_ys = []
-            train_idxs = []
-            for (_, outputs, idxs) in train_loader:
-                train_ys.append(outputs.data.numpy())
-                train_idxs.append(idxs.data.numpy())
+            
+            
+            train_set = []
+            best_train_targets_list = []
+            idx_list = []
+            for data in train_loader:
+                inputs, targets, idx = data
+                inputs = inputs.view(inputs.size(0), -1)
+                train_set.append(inputs.numpy())
+                best_train_targets_list  =  best_train_targets_list + list(targets.numpy())
+                idx_list += list(idx.numpy())
 
-            train_ys = np.hstack(train_ys)
-            train_idxs = np.hstack(train_idxs)
-            train_idxs_ys = pd.DataFrame({'idx' : train_idxs,'y' : train_ys})
-
-
-            test_ys = []
-            test_idxs = []
-            for (_, outputs, idxs) in test_loader:
-                test_ys.append(outputs.data.numpy())
-                test_idxs.append(idxs.data.numpy())
-
-            test_ys = np.hstack(test_ys)
-            test_idxs = np.hstack(test_idxs)
-            test_idxs_ys = pd.DataFrame({'idx' : test_idxs,'y' : test_ys})
-
-
-
-            ens_train_me_losses = 0
-            ens_st_train_me_losses = 0
-
-            ## patience index
-            train_n = train_ys.shape[0]
-            check_iter = np.min(np.array([10, (train_n // batch_size)]))
-            patience = np.ceil(patience_thres / check_iter).astype('int')
-            loss_column = ['idx','ens_value','ens_st_value','y']
-            for model_iter in range(n_ens):
-                model_seed = start_model_seed+(model_iter*10)
-
-                logger.info('Set model seed to %d.' % (model_seed))
-                ## step 1
-                train_idxs_losses, test_idxs_losses, running_time = odim_light(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option)
-                train_me_losses = (train_idxs_losses.to_numpy())[:,1]
-                st_train_me_losses = (train_me_losses - train_me_losses.mean())/train_me_losses.std()
-                train_idxs_losses['st_loss'] = st_train_me_losses
-                add_label_idx_losses = pd.merge(train_idxs_losses, train_idxs_ys, on ='idx')
-                fpr, tpr, thresholds = metrics.roc_curve(np.array(add_label_idx_losses['y']), np.array(add_label_idx_losses['loss']), pos_label=1)
-                roc_auc = metrics.auc(fpr, tpr)
-                logger.info('\n...Train_AUC value- VAE: %0.4f' %(roc_auc))
+            train_set = np.concatenate(train_set)
+            clf = ECOD().fit(train_set)
+            train_losses = clf.decision_scores_
+            #train_losses = clf.decision_function(train_set)
+            #train_losses = train_losses * (-1)
+            
+            auc_val = roc_auc_score(best_train_targets_list,train_losses)
+            ap_val = average_precision_score(best_train_targets_list, train_losses)
+            logger.info('train_auc: %.4f' % auc_val)
+            logger.info('train_ap: %.4f' % ap_val)
+            
+            ecod_train_auc_list.append(auc_val)
+            ecod_train_ap_list.append(ap_val)
 
 
-                test_me_losses = (test_idxs_losses.to_numpy())[:,1]
-                st_test_me_losses = (test_me_losses - test_me_losses.mean())/test_me_losses.std()
-                test_idxs_losses['st_loss'] = st_test_me_losses
-                add_label_idx_test_losses = pd.merge(test_idxs_losses, test_idxs_ys, on ='idx')
-                fpr, tpr, thresholds = metrics.roc_curve(np.array(add_label_idx_test_losses['y']), np.array(add_label_idx_test_losses['loss']), pos_label=1)
-                roc_auc = metrics.auc(fpr, tpr)
-                logger.info('\n...Test_AUC value- VAE: %0.4f' %(roc_auc))
-
-                if model_iter == 0:
-                    ens_loss = add_label_idx_losses
-                    ens_loss.columns = loss_column
-
-                    test_ens_loss = add_label_idx_test_losses
-                    test_ens_loss.columns = loss_column
-                else:
-                    merge_data = pd.merge(ens_loss, train_idxs_losses, on = 'idx')
-                    merge_data['ens_value'] = merge_data['ens_value'] + merge_data['loss']
-                    merge_data['ens_st_value'] = merge_data['ens_st_value'] + merge_data['st_loss']
-                    ens_loss = merge_data[loss_column]
-
-                    test_merge_data = pd.merge(test_ens_loss, test_idxs_losses, on = 'idx')
-                    test_merge_data['ens_value'] = test_merge_data['ens_value'] + test_merge_data['loss']
-                    test_merge_data['ens_st_value'] = test_merge_data['ens_st_value'] + test_merge_data['st_loss']
-                    test_ens_loss = test_merge_data[loss_column]
+            test_set = []
+            best_test_targets_list = []
+            for data in test_loader:
+                inputs, targets, idx = data
+                inputs = inputs.view(inputs.size(0), -1)
+                test_set.append(inputs.numpy())
+                best_test_targets_list  =  best_test_targets_list + list(targets.numpy())
 
 
-                train_auc = roc_auc_score(np.array(ens_loss['y']), np.array(ens_loss['ens_value']))
-                train_ap = average_precision_score(np.array(ens_loss['y']), np.array(ens_loss['ens_value']))
-                logger.info('\n ...Train_AUC value- Ens VAE: %0.4f' % train_auc)
-                logger.info('\n ...Train_PRAUC value- Ens VAE: %0.4f' % train_ap)
+            test_set = np.concatenate(test_set)
+            test_losses = clf.decision_function(test_set)
+            #test_losses = test_losses * (-1)
+            
+            
+            auc_val = roc_auc_score(best_test_targets_list,test_losses)
+            ap_val = average_precision_score(best_test_targets_list, test_losses)
+            logger.info('test_auc: %.4f' % auc_val)
+            logger.info('test_ap: %.4f' % ap_val)
+            
+            ecod_test_auc_list.append(auc_val)
+            ecod_test_ap_list.append(ap_val)
 
-                test_auc = roc_auc_score(np.array(test_ens_loss['y']), np.array(test_ens_loss['ens_value']))
-                test_ap = average_precision_score(np.array(test_ens_loss['y']), np.array(test_ens_loss['ens_value']))
-                logger.info('\n ...Test_AUC value- Ens VAE: %0.4f' %(test_auc))
-                logger.info('\n ...Test_PRAUC value- Ens VAE: %0.4f' %(test_ap))
+            logger.removeHandler(file_handler)
 
-            logger.info('\n ...Final Train_AUC value of Ens VAE: %0.4f' %(train_auc))
-            logger.info('\n ...Final Train_PRAUC value of Ens VAE: %0.4f' %(train_ap))
-            train_auc_list.append(train_auc)
-            train_ap_list.append(train_ap)
 
-            logger.info('\n ...Final Test_AUC value of Ens VAE: %0.4f' %(test_auc))
-            logger.info('\n ...Final Test_PRAUC value of Ens VAE: %0.4f' %(test_ap))
-            logger.info('Running_time of InlierMem : %.4f' % (running_time))
-            test_auc_list.append(test_auc)
-            test_ap_list.append(test_ap)
-            ens_loss.to_csv(os.path.join(save_score_dir,'score_data.csv'),index=False)
-            test_ens_loss.to_csv(os.path.join(save_score_dir,'test_score_data.csv'),index=False)
+            # Set up logging
+            logging.basicConfig(level=logging.INFO)
+            logger = logging.getLogger()
+            logger.setLevel(logging.INFO)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            log_file = save_dir + '/log_normal_class'+str(normal_class).replace('[','').replace(']','').replace(', ','_')+'_LoF.txt'
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setLevel(logging.INFO)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+            logger.info('-----------------------------------------------------------------')
+            logger.info('-----------------------------------------------------------------')
+
+
+            clf = COPOD().fit(train_set)
+            train_losses = clf.decision_scores_
+            #train_losses = train_losses * (-1)
+
+            auc_val = roc_auc_score(best_train_targets_list,train_losses)
+            ap_val = average_precision_score(best_train_targets_list, train_losses)
+            logger.info('train_auc: %.4f' % auc_val)
+            logger.info('train_ap: %.4f' % ap_val)
+
+            copod_train_auc_list.append(auc_val)
+            copod_train_ap_list.append(ap_val)
+            
+
+            test_losses = clf.decision_function(test_set)
+            #test_losses = test_losses * (-1)
+            
+            auc_val = roc_auc_score(best_test_targets_list,test_losses)
+            ap_val = average_precision_score(best_test_targets_list, test_losses)
+            logger.info('test_auc: %.4f' % auc_val)
+            logger.info('test_ap: %.4f' % ap_val)
+            
+            copod_test_auc_list.append(auc_val)
+            copod_test_ap_list.append(ap_val)
+
             logger.removeHandler(file_handler)
         
         
-        train_auc_list.append(np.mean(train_auc_list))
-        train_auc_list.append(np.std(train_auc_list))
-        train_ap_list.append(np.mean(train_ap_list))
-        train_ap_list.append(np.std(train_ap_list))
-
-        class_train_df = pd.DataFrame({
-            'row_names' : row_name_list,
-            'train_auc' : train_auc_list,
-            'train_ap' : train_ap_list
-        })
-        class_train_df.set_index(keys = 'row_names', inplace = True)
-        try:
-            train_df = pd.concat([train_df, class_train_df], axis = 0)
-        except:
-            train_df = class_train_df
-
-        train_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_train_result.csv'))
+        ecod_train_auc_list.append(np.mean(ecod_train_auc_list))
+        ecod_train_auc_list.append(np.std(ecod_train_auc_list))
+        ecod_train_ap_list.append(np.mean(ecod_train_ap_list))
+        ecod_train_ap_list.append(np.std(ecod_train_ap_list))
         
-        test_auc_list.append(np.mean(test_auc_list))
-        test_auc_list.append(np.std(test_auc_list))
-        test_ap_list.append(np.mean(test_ap_list))
-        test_ap_list.append(np.std(test_ap_list))
-
-        class_test_df = pd.DataFrame({
+        copod_train_auc_list.append(np.mean(copod_train_auc_list))
+        copod_train_auc_list.append(np.std(copod_train_auc_list))
+        copod_train_ap_list.append(np.mean(copod_train_ap_list))
+        copod_train_ap_list.append(np.std(copod_train_ap_list))
+        
+        ecod_class_train_df = pd.DataFrame({
             'row_names' : row_name_list,
-            'test_auc' : test_auc_list,
-            'test_ap' : test_ap_list
+            'train_auc' : ecod_train_auc_list,
+            'train_ap' : ecod_train_ap_list
         })
-        class_test_df.set_index(keys = 'row_names', inplace = True)
+        ecod_class_train_df.set_index(keys = 'row_names', inplace = True)
         try:
-            test_df = pd.concat([test_df, class_test_df], axis = 0)
+            ecod_train_df = pd.concat([ecod_train_df, ecod_class_train_df], axis = 0)
         except:
-            test_df = class_test_df
+            ecod_train_df = ecod_class_train_df
+        ecod_train_df.to_csv(os.path.join(save_metric_dir,'ECOD_train_result.csv'))
+        
+        
+        copod_class_train_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'train_auc' : copod_train_auc_list,
+            'train_ap' : copod_train_ap_list
+        })
+        copod_class_train_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            copod_train_df = pd.concat([copod_train_df, copod_class_train_df], axis = 0)
+        except:
+            copod_train_df = copod_class_train_df
+        copod_train_df.to_csv(os.path.join(save_metric_dir,'COPOD_train_result.csv'))
+        
+        
+        #Test result
+        ecod_test_auc_list.append(np.mean(ecod_test_auc_list))
+        ecod_test_auc_list.append(np.std(ecod_test_auc_list))
+        ecod_test_ap_list.append(np.mean(ecod_test_ap_list))
+        ecod_test_ap_list.append(np.std(ecod_test_ap_list))
+        
+        copod_test_auc_list.append(np.mean(copod_test_auc_list))
+        copod_test_auc_list.append(np.std(copod_test_auc_list))
+        copod_test_ap_list.append(np.mean(copod_test_ap_list))
+        copod_test_ap_list.append(np.std(copod_test_ap_list))
 
-        test_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_test_result.csv'))
+        ecod_class_test_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'test_auc' : ecod_test_auc_list,
+            'test_ap' : ecod_test_ap_list
+        })
+        ecod_class_test_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            ecod_test_df = pd.concat([ecod_test_df, ecod_class_test_df], axis = 0)
+        except:
+            ecod_test_df = ecod_class_test_df
+        ecod_test_df.to_csv(os.path.join(save_metric_dir,'ECOD_test_result.csv'))
+        
+        
+        copod_class_test_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'test_auc' : copod_test_auc_list,
+            'test_ap' : copod_test_ap_list
+        })
+        copod_class_test_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            copod_test_df = pd.concat([copod_test_df, copod_class_test_df], axis = 0)
+        except:
+            copod_test_df = copod_class_test_df
+        copod_test_df.to_csv(os.path.join(save_metric_dir,'COPOD_test_result.csv'))    
+        
 
 
 
