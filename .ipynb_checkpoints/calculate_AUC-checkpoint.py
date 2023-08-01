@@ -48,6 +48,7 @@ if __name__ == "__main__":
     ratio_known_normal = 0.0
     ratio_known_outlier = 0.0
     n_known_outlier_classes = 0
+    data_path = '../data'
     if dataset_name == 'mnist':
         train_option = 'IWAE_alpha1._binarize'
         filter_net_name = 'mnist_mlp_vae'
@@ -149,6 +150,7 @@ if __name__ == "__main__":
         filter_net_name = 'vowels_mlp_vae_gaussian'
         ratio_pollution = 0.034
         normal_class_list = [0]
+        patience_thres = 100
     elif dataset_name == 'wbc':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'wbc_mlp_vae_gaussian'
@@ -197,9 +199,137 @@ if __name__ == "__main__":
         ratio_pollution = 0.1
         normal_class_list = [0,1,2,3,4]
         patience_thres = 300
+        
+    
+    
+    elif dataset_name == '1_ALOI':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '1_ALOI_mlp_vae_gaussian'
+        ratio_pollution = 0.0304
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '3_backdoor':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '3_backdoor_mlp_vae_gaussian'
+        ratio_pollution = 0.0244
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '5_campaign':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '5_campaign_mlp_vae_gaussian'
+        ratio_pollution = 0.11265
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '7_Cardiotocography':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '7_Cardiotocography_mlp_vae_gaussian'
+        ratio_pollution = 0.2204
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '8_celeba':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '8_celeba_mlp_vae_gaussian'
+        ratio_pollution = 0.0224
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '9_census':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '9_census_mlp_vae_gaussian'
+        ratio_pollution = 0.062
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '11_donors':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '11_donors_mlp_vae_gaussian'
+        ratio_pollution = 0.05925
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '13_fraud':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '13_fraud_mlp_vae_gaussian'
+        ratio_pollution = 0.0017
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '19_landsat':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '19_landsat_mlp_vae_gaussian'
+        ratio_pollution = 0.2071
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '22_magic.gamma':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '22_magic.gamma_mlp_vae_gaussian'
+        ratio_pollution = 0.3516
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '27_PageBlocks':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '27_PageBlocks_mlp_vae_gaussian'
+        ratio_pollution = 0.0946
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '33_skin':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '33_skin_mlp_vae_gaussian'
+        ratio_pollution = 0.2075
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '35_SpamBase':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '35_SpamBase_mlp_vae_gaussian'
+        ratio_pollution = 0.3991
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '41_Waveform':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '41_Waveform_mlp_vae_gaussian'
+        ratio_pollution = 0.029
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'CIFAR10' in dataset_name:
+        data_path = '../ADBench/datasets/CV_by_ViT'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'AD_image_mlp_vae_gaussian'
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'MNIST-C' in dataset_name:
+        data_path = '../ADBench/datasets/CV_by_ViT'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'AD_image_mlp_vae_gaussian'
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'MVTec-AD' in dataset_name:
+        data_path = '../ADBench/datasets/CV_by_ViT'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'AD_image_mlp_vae_gaussian'
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
+    elif 'SVHN' in dataset_name:
+        data_path = '../ADBench/datasets/CV_by_ViT'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'AD_image_mlp_vae_gaussian'
+        ratio_pollution = 0.05
+        normal_class_list = [0]
+        patience_thres = 100
 
 
-    data_path = '../data'
     data_seed_list = [110,120,130,140,150]
     start_model_seed = 1234
     n_ens = 10
@@ -221,13 +351,30 @@ if __name__ == "__main__":
         batch_size = 64
         num_threads = 0
         n_jobs_dataloader = 0
+        
+        row_name_list = []
+        for seed_idx in range(len(data_seed_list)):
+            row_name = f'Class{normal_class}_simulation{seed_idx+1}'
+            row_name_list.append(row_name)
+        row_name = f'Average'
+        row_name_list.append(row_name)
+        row_name = f'Std'
+        row_name_list.append(row_name)
+        train_auc_list = []
+        train_ap_list = []
+        test_auc_list = []
+        test_ap_list = []
+        
         for seed_idx in range(len(data_seed_list)):
             seed = data_seed_list[seed_idx]
 
-            save_dir = os.path.join(f'Results/{dataset_name}/extract_score_v6_addtest_refact_PRAUC',f'log{seed}')
+            save_metric_dir = f'Results/{dataset_name}'
+            os.makedirs(save_metric_dir, exist_ok=True)
+            save_dir = os.path.join(f'Results/{dataset_name}/ODIM',f'log{seed}')
             os.makedirs(save_dir, exist_ok=True)
-            save_score_dir = os.path.join(f'Results/{dataset_name}/extract_score_v6_addtest_refact_PRAUC',f'score{seed}')
+            save_score_dir = os.path.join(f'Results/{dataset_name}/ODIM',f'score{seed}')
             os.makedirs(save_score_dir, exist_ok=True)
+            
 
 
             # Set up logging
@@ -319,7 +466,7 @@ if __name__ == "__main__":
 
                 logger.info('Set model seed to %d.' % (model_seed))
                 ## step 1
-                train_idxs_losses, test_idxs_losses = odim(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option)
+                train_idxs_losses, test_idxs_losses, running_time = odim(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option)
                 train_me_losses = (train_idxs_losses.to_numpy())[:,1]
                 st_train_me_losses = (train_me_losses - train_me_losses.mean())/train_me_losses.std()
                 train_idxs_losses['st_loss'] = st_train_me_losses
@@ -368,12 +515,54 @@ if __name__ == "__main__":
 
             logger.info('\n ...Final Train_AUC value of Ens VAE: %0.4f' %(train_auc))
             logger.info('\n ...Final Train_PRAUC value of Ens VAE: %0.4f' %(train_ap))
+            train_auc_list.append(train_auc)
+            train_ap_list.append(train_ap)
 
             logger.info('\n ...Final Test_AUC value of Ens VAE: %0.4f' %(test_auc))
             logger.info('\n ...Final Test_PRAUC value of Ens VAE: %0.4f' %(test_ap))
+            logger.info('Running_time of InlierMem : %.4f' % (running_time))
+            test_auc_list.append(test_auc)
+            test_ap_list.append(test_ap)
             ens_loss.to_csv(os.path.join(save_score_dir,'score_data.csv'),index=False)
             test_ens_loss.to_csv(os.path.join(save_score_dir,'test_score_data.csv'),index=False)
             logger.removeHandler(file_handler)
+            
+        
+        train_auc_list.append(np.mean(train_auc_list))
+        train_auc_list.append(np.std(train_auc_list))
+        train_ap_list.append(np.mean(train_ap_list))
+        train_ap_list.append(np.std(train_ap_list))
+
+        class_train_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'train_auc' : train_auc_list,
+            'train_ap' : train_ap_list
+        })
+        class_train_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            train_df = pd.concat([train_df, class_train_df], axis = 0)
+        except:
+            train_df = class_train_df
+
+        train_df.to_csv(os.path.join(save_metric_dir,'ODIM_train_result.csv'))
+        
+        test_auc_list.append(np.mean(test_auc_list))
+        test_auc_list.append(np.std(test_auc_list))
+        test_ap_list.append(np.mean(test_ap_list))
+        test_ap_list.append(np.std(test_ap_list))
+
+        class_test_df = pd.DataFrame({
+            'row_names' : row_name_list,
+            'test_auc' : test_auc_list,
+            'test_ap' : test_ap_list
+        })
+        class_test_df.set_index(keys = 'row_names', inplace = True)
+        try:
+            test_df = pd.concat([test_df, class_test_df], axis = 0)
+        except:
+            test_df = class_test_df
+
+        test_df.to_csv(os.path.join(save_metric_dir,'ODIM_test_result.csv'))
 
 
 
