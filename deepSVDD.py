@@ -50,6 +50,8 @@ class DeepSVDD(object):
             'test_auc': None,
             'test_time': None,
             'test_scores': None,
+            'train_losses' : None,
+            'test_losses' : None
         }
 
     def set_network(self, net_name):
@@ -87,6 +89,8 @@ class DeepSVDD(object):
         self.results['test_scores'] = self.trainer.test_scores
         self.results['train_auc'] = self.trainer.train_auc
         self.results['train_ap'] = self.trainer.train_ap
+        self.results['train_losses'] = self.trainer.train_losses
+        self.results['test_losses'] = self.trainer.test_losses
         
         
 
