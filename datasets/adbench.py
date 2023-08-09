@@ -9,7 +9,7 @@ import torch
 class AdBenchDataset(BaseADDataset):
 
     def __init__(self, root: str, dataset_name: str, n_known_outlier_classes: int = 0, ratio_known_normal: float = 0.0,
-                 ratio_known_outlier: float = 0.0, ratio_pollution: float = 0.0, random_state=None):
+                 ratio_known_outlier: float = 0.0, ratio_pollution: float = 0.0, feature_range: tuple = (0.,1.), random_state=None):
         super().__init__(root)
 
         # Define normal and outlier classes
@@ -23,7 +23,7 @@ class AdBenchDataset(BaseADDataset):
             self.known_outlier_classes = (1,)
 
         # Get train set
-        train_set = AdBench_Dataset(root=self.root, dataset_name=dataset_name, train=True, random_state=random_state,
+        train_set = AdBench_Dataset(root=self.root, dataset_name=dataset_name, train=True, feature_range = feature_range, random_state=random_state,
                                 download=True)
 
         # Create semi-supervised setting
@@ -39,7 +39,7 @@ class AdBenchDataset(BaseADDataset):
         self.train_set = Subset(train_set, idx)
 
         # Get test set
-        self.test_set = AdBench_Dataset(root=self.root, dataset_name=dataset_name, train=False, random_state=random_state)
+        self.test_set = AdBench_Dataset(root=self.root, dataset_name=dataset_name, train=False, feature_range = feature_range, random_state=random_state)
     
     def refine_method(self,subset_indices = None):
         if subset_indices != None:

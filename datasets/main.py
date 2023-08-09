@@ -10,7 +10,7 @@ from .adbench import AdBenchDataset
 import os
 
 def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_known_outlier_classes: int = 0,
-                 ratio_known_normal: float = 0.0, ratio_known_outlier: float = 0.0, ratio_pollution: float = 0.0, ZCA_option : bool = False,
+                 ratio_known_normal: float = 0.0, ratio_known_outlier: float = 0.0, ratio_pollution: float = 0.0, ZCA_option : bool = False, feature_range = (0,1),
                  random_state=None):
     """Loads the dataset."""
 
@@ -40,6 +40,7 @@ def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_k
                                 ratio_known_normal=ratio_known_normal,
                                 ratio_known_outlier=ratio_known_outlier,
                                 ratio_pollution=ratio_pollution,
+                                feature_range = feature_range,
                                 random_state=random_state)
 
     
@@ -116,6 +117,7 @@ def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_k
                                 ratio_known_normal=ratio_known_normal,
                                 ratio_known_outlier=ratio_known_outlier,
                                 ratio_pollution=ratio_pollution,
+                                feature_range = feature_range,
                                 random_state=random_state)
 
     return dataset

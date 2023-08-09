@@ -30,8 +30,8 @@ parser = argparse.ArgumentParser(description='ODIM Experiment')
 # arguments for optimization
 parser.add_argument('--use_cuda', type=bool, default=True)
 parser.add_argument('--gpu_num', type=int, default=1)
-parser.add_argument('--dataset_name', type=str, default='mnist')
-parser.add_argument('--batch_size', type=int, default=64)
+parser.add_argument('--dataset_name', type=str, default='breastw')
+parser.add_argument('--batch_size', type=int, default=512)
 parser.add_argument('--filter_net_name', type=str, default='')
 parser.add_argument('--data_path', type=str, default='')
 
@@ -66,147 +66,146 @@ if __name__ == "__main__":
         ratio_pollution = 0.1
         normal_class_list = [0,1,2,3,4,5,6,7,8,9]
         
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'fmnist':
         train_option = 'IWAE_alpha1._gaussian'
         filter_net_name = 'mnist_mlp_vae_gaussian'
         ratio_pollution = 0.1
         normal_class_list = [0,1,2,3,4,5,6,7,8,9]
-        
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'wafer_scale':
         train_option = 'IWAE_alpha1._binarize'
         filter_net_name = 'mnist_mlp_vae'
         ratio_pollution = 0.1
         normal_class_list = [0]
         
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'annthyroid':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'annthyroid_mlp_vae_gaussian'
         ratio_pollution = 0.07
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'breastw':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'breastw_mlp_vae_gaussian'
         ratio_pollution = 0.35
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'cover':
         train_option = 'IWAE_alpha1.'
         filter_net_name =  'cover_mlp_vae_gaussian'
         ratio_pollution = 0.009
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'glass':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'glass_mlp_vae_gaussian'
         ratio_pollution = 0.042
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'ionosphere':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'ionosphere_mlp_vae_gaussian'
         ratio_pollution = 0.36
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'letter':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'letter_mlp_vae_gaussian'
         ratio_pollution = 0.0625
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'mammography':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'mammography_mlp_vae_gaussian'
         ratio_pollution = 0.0232
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'musk':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'musk_mlp_vae_gaussian'
         ratio_pollution = 0.032
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'optdigits':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'optdigits_mlp_vae_gaussian'
         ratio_pollution = 0.029
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'pendigits':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'pendigits_mlp_vae_gaussian'
         ratio_pollution = 0.0227
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'pima':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'pima_mlp_vae_gaussian'
         ratio_pollution = 0.34
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'speech':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'speech_mlp_vae_gaussian'
         ratio_pollution = 0.0165
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'vertebral':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'vertebral_mlp_vae_gaussian'
         ratio_pollution = 0.125
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'vowels':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'vowels_mlp_vae_gaussian'
         ratio_pollution = 0.034
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'wbc':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'wbc_mlp_vae_gaussian'
         ratio_pollution = 0.056
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'arrhythmia':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'arrhythmia_mlp_vae_gaussian'
         ratio_pollution = 0.14
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'cardio':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'cardio_mlp_vae_gaussian'
         ratio_pollution = 0.09
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'satellite':
         train_option = 'IWAE_alpha1.'
         filter_net_name =  'satellite_mlp_vae_gaussian'
         ratio_pollution = 0.31
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'satimage-2':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'satimage-2_mlp_vae_gaussian'
         ratio_pollution = 0.01
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'shuttle':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'shuttle_mlp_vae_gaussian'
         ratio_pollution = 0.07
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'thyroid':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'thyroid_mlp_vae_gaussian'
         ratio_pollution = 0.02
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == 'reuters':
         train_option = 'IWAE_alpha1.'
         filter_net_name = 'reuters_mlp_vae_256_128_64_gaussian'
@@ -221,126 +220,126 @@ if __name__ == "__main__":
         filter_net_name = '1_ALOI_mlp_vae_gaussian'
         ratio_pollution = 0.0304
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '3_backdoor':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '3_backdoor_mlp_vae_gaussian'
         ratio_pollution = 0.0244
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '5_campaign':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '5_campaign_mlp_vae_gaussian'
         ratio_pollution = 0.11265
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '7_Cardiotocography':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '7_Cardiotocography_mlp_vae_gaussian'
         ratio_pollution = 0.2204
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '8_celeba':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '8_celeba_mlp_vae_gaussian'
         ratio_pollution = 0.0224
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '9_census':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '9_census_mlp_vae_gaussian'
         ratio_pollution = 0.062
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '11_donors':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '11_donors_mlp_vae_gaussian'
         ratio_pollution = 0.05925
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '13_fraud':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '13_fraud_mlp_vae_gaussian'
         ratio_pollution = 0.0017
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '19_landsat':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '19_landsat_mlp_vae_gaussian'
         ratio_pollution = 0.2071
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '22_magic.gamma':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '22_magic.gamma_mlp_vae_gaussian'
         ratio_pollution = 0.3516
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '27_PageBlocks':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '27_PageBlocks_mlp_vae_gaussian'
         ratio_pollution = 0.0946
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '33_skin':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '33_skin_mlp_vae_gaussian'
         ratio_pollution = 0.2075
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '35_SpamBase':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '35_SpamBase_mlp_vae_gaussian'
         ratio_pollution = 0.3991
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif dataset_name == '41_Waveform':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '41_Waveform_mlp_vae_gaussian'
         ratio_pollution = 0.029
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif 'CIFAR10' in dataset_name:
         data_path = args.data_path
         train_option = 'IWAE_alpha1.'
         filter_net_name = args.filter_net_name
         ratio_pollution = 0.05
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif 'MNIST-C' in dataset_name:
         data_path = args.data_path
         train_option = 'IWAE_alpha1.'
         filter_net_name = args.filter_net_name
         ratio_pollution = 0.05
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif 'MVTec-AD' in dataset_name:
         data_path = args.data_path
         train_option = 'IWAE_alpha1.'
         filter_net_name = args.filter_net_name
         ratio_pollution = 0.05
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif 'SVHN' in dataset_name:
         data_path = args.data_path
         train_option = 'IWAE_alpha1.'
         filter_net_name = args.filter_net_name
         ratio_pollution = 0.05
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
 
         
     elif '20news' in dataset_name:
@@ -349,35 +348,35 @@ if __name__ == "__main__":
         filter_net_name = args.filter_net_name
         ratio_pollution = 0.05
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]    
+        patience_thres_list = [10,20,50,100,150,200]    
     elif 'agnews' in dataset_name:
         data_path = args.data_path
         train_option = 'IWAE_alpha1.'
         filter_net_name = args.filter_net_name
         ratio_pollution = 0.05
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]    
+        patience_thres_list = [10,20,50,100,150,200]    
     elif 'amazon' in dataset_name:
         data_path = args.data_path
         train_option = 'IWAE_alpha1.'
         filter_net_name = args.filter_net_name
         ratio_pollution = 0.05
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]
+        patience_thres_list = [10,20,50,100,150,200]
     elif 'imdb' in dataset_name:
         data_path = args.data_path
         train_option = 'IWAE_alpha1.'
         filter_net_name = args.filter_net_name
         ratio_pollution = 0.05
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]  
+        patience_thres_list = [10,20,50,100,150,200]  
     elif 'yelp' in dataset_name:
         data_path = args.data_path
         train_option = 'IWAE_alpha1.'
         filter_net_name = args.filter_net_name
         ratio_pollution = 0.05
         normal_class_list = [0]
-        patience_thres_list = [10,20,50,150,300]  
+        patience_thres_list = [10,20,50,100,150,200]  
         
     
         
@@ -424,9 +423,9 @@ if __name__ == "__main__":
 
                 save_metric_dir = f'Results/{dataset_name}'
                 os.makedirs(save_metric_dir, exist_ok=True)
-                save_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}',f'log{seed}')
+                save_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}_pat{patience_thres}',f'log{seed}')
                 os.makedirs(save_dir, exist_ok=True)
-                save_score_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}',f'score{seed}')
+                save_score_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}_pat{patience_thres}',f'score{seed}')
                 os.makedirs(save_score_dir, exist_ok=True)
 
 
@@ -513,6 +512,8 @@ if __name__ == "__main__":
                 ## patience index
                 train_n = train_ys.shape[0]
                 check_iter = np.min(np.array([10, (train_n // batch_size)]))
+                if check_iter == 0:
+                    check_iter = 1
                 patience = np.ceil(patience_thres / check_iter).astype('int')
                 loss_column = ['idx','ens_value','ens_st_value','y']
                 for model_iter in range(n_ens):
@@ -576,8 +577,8 @@ if __name__ == "__main__":
                 logger.info('Running_time of InlierMem : %.4f' % (running_time))
                 test_auc_list.append(test_auc)
                 test_ap_list.append(test_ap)
-                ens_loss.to_csv(os.path.join(save_score_dir,f'score_data_pat{patience}.csv'),index=False)
-                test_ens_loss.to_csv(os.path.join(save_score_dir,f'test_score_data{patience}.csv'),index=False)
+                ens_loss.to_csv(os.path.join(save_score_dir,f'score_data_pat{patience_thres}.csv'),index=False)
+                test_ens_loss.to_csv(os.path.join(save_score_dir,f'test_score_data{patience_thres}.csv'),index=False)
                 logger.removeHandler(file_handler)
 
 
@@ -597,7 +598,7 @@ if __name__ == "__main__":
             except:
                 train_df = class_train_df
 
-            train_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light_{filter_net_name}_pat{patience}_train_result.csv'))
+            train_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light_{filter_net_name}_pat{patience_thres}_train_result.csv'))
 
             test_auc_list.append(np.mean(test_auc_list))
             test_auc_list.append(np.std(test_auc_list))
@@ -615,7 +616,7 @@ if __name__ == "__main__":
             except:
                 test_df = class_test_df
 
-            test_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light_{filter_net_name}_pat{patience}_test_result.csv'))
+            test_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light_{filter_net_name}_pat{patience_thres}_test_result.csv'))
 
 
 

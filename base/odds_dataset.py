@@ -27,7 +27,7 @@ class ODDSDataset(Dataset):
         'thyroid': 'https://www.dropbox.com/s/bih0e15a0fukftb/thyroid.mat?dl=1'
     }
 
-    def __init__(self, root: str, dataset_name: str, train=True, random_state=None, download=False):
+    def __init__(self, root: str, dataset_name: str, train=True, feature_range = (0,1), random_state=None, download=False):
         super(Dataset, self).__init__()
 
         self.classes = [0, 1]
@@ -70,7 +70,7 @@ class ODDSDataset(Dataset):
         X_test_stand = scaler.transform(X_test)
 
         # Scale to range [0,1]
-        minmax_scaler = MinMaxScaler().fit(X_train_stand)
+        minmax_scaler = MinMaxScaler(feature_range = feature_range).fit(X_train_stand)
         X_train_scaled = minmax_scaler.transform(X_train_stand)
         X_test_scaled = minmax_scaler.transform(X_test_stand)
 
