@@ -10,7 +10,7 @@ from .AD_mlp import MLP, MLP_Autoencoder
 def build_network(net_name,n_cluster=None):
     """Builds the neural network."""
 
-    implemented_networks = ('mnist_LeNet',
+    implemented_networks = ('mnist_LeNet','mnist_mlp',
                             'arrhythmia_mlp', 'cardio_mlp', 'satellite_mlp', 'satimage-2_mlp', 'shuttle_mlp',
                             'thyroid_mlp',
                             'annthyroid_mlp', 'breastw_mlp', 'cover_mlp', 'ecoli_mlp', 'glass_mlp', 
@@ -156,6 +156,9 @@ def build_network(net_name,n_cluster=None):
         
         
         
+    if net_name == 'mnist_mlp':
+        net = MLP(x_dim=784, h_dims=[128, 64], rep_dim=32, bias=False)
+        
     if net_name == 'arrhythmia_mlp':
         net = MLP(x_dim=274, h_dims=[128, 64], rep_dim=32, bias=False)
 
@@ -264,7 +267,7 @@ def build_network(net_name,n_cluster=None):
 def build_autoencoder(net_name):
     """Builds the corresponding autoencoder network."""
 
-    implemented_networks = ('mnist_LeNet', 
+    implemented_networks = ('mnist_LeNet', 'mnist_mlp',
                             'arrhythmia_mlp', 'cardio_mlp', 'satellite_mlp', 'satimage-2_mlp', 'shuttle_mlp',
                             'thyroid_mlp',
                            'annthyroid_mlp', 'breastw_mlp', 'cover_mlp', 'ecoli_mlp', 'glass_mlp', 'ionosphere_mlp', 'letter_mlp', 'lympho_mlp', 'mammography_mlp', 'musk_mlp', 'optdigits_mlp', 'pendigits_mlp', 'pima_mlp', 'speech_mlp', 'vertebral_mlp', 'vowels_mlp', 'wbc_mlp', 'wine_mlp', 'reuters_mlp',
@@ -280,6 +283,9 @@ def build_autoencoder(net_name):
 
     ae_net = None
 
+    if net_name == 'mnist_mlp':
+        ae_net = MLP_Autoencoder(x_dim=784, h_dims=[128, 64], rep_dim=32, bias=False)
+        
     if net_name == 'mnist_LeNet':
         ae_net = MNIST_LeNet_Autoencoder()
     if net_name == 'reuters_mlp':

@@ -39,7 +39,7 @@ parser.add_argument('--data_path', type=str, default='')
 args = parser.parse_args()
 
 gpu_num = 0
-dataset_name = 'fmnist'
+dataset_name = 'wafer_scale'
 batch_size = 128
 use_cuda = True
 # net_name = 'AD_NLP_mlp'
@@ -100,7 +100,7 @@ if __name__ == "__main__":
         
     elif dataset_name == 'wafer_scale':
         
-        net_name = 'mnist_LeNet'
+        net_name = 'mnist_mlp'
         ratio_pollution = 0.1
         normal_class_list = [0]
         
