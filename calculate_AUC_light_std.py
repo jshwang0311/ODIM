@@ -609,7 +609,6 @@ if __name__ == "__main__":
         normal_class_list = [0]
         patience_thres = 100
         
-        
     elif dataset_name == '1_ALOI_std':
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
@@ -708,6 +707,9 @@ if __name__ == "__main__":
         ratio_pollution = 0.029
         normal_class_list = [0]
         patience_thres = 100
+        
+        
+        
 
 
     data_seed_list = [110,120,130,140,150]
@@ -749,9 +751,9 @@ if __name__ == "__main__":
 
             save_metric_dir = f'Results/{dataset_name}'
             os.makedirs(save_metric_dir, exist_ok=True)
-            save_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}',f'log{seed}')
+            save_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}_random',f'log{seed}')
             os.makedirs(save_dir, exist_ok=True)
-            save_score_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}',f'score{seed}')
+            save_score_dir = os.path.join(f'Results/{dataset_name}/ODIM_light{batch_size}_{filter_net_name}_random',f'score{seed}')
             os.makedirs(save_score_dir, exist_ok=True)
             
 
@@ -922,7 +924,7 @@ if __name__ == "__main__":
         except:
             train_df = class_train_df
 
-        train_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_train_result.csv'))
+        train_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_random_train_result.csv'))
         
         test_auc_list.append(np.mean(test_auc_list))
         test_auc_list.append(np.std(test_auc_list))
@@ -940,7 +942,7 @@ if __name__ == "__main__":
         except:
             test_df = class_test_df
 
-        test_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_test_result.csv'))
+        test_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_random_test_result.csv'))
 
 
 

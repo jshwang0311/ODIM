@@ -10,6 +10,7 @@ from .adbench import AdBenchDataset
 
 from .odds_random import ODDSADRandomDataset
 from .adbench_random import AdBenchRandomDataset
+from .adbench_std import AdBenchStdDataset
 import os
 
 def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_known_outlier_classes: int = 0,
@@ -31,7 +32,11 @@ def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_k
                             '27_PageBlocks_random', '33_skin_random', '35_SpamBase_random', '41_Waveform_random',
                             
                             'CIFAR10_0', 'CIFAR10_1', 'CIFAR10_2', 'CIFAR10_3', 'CIFAR10_4', 'CIFAR10_5', 'CIFAR10_6', 'CIFAR10_7', 'CIFAR10_8', 'CIFAR10_9', 'MNIST-C_brightness', 'MNIST-C_canny_edges', 'MNIST-C_dotted_line', 'MNIST-C_fog', 'MNIST-C_glass_blur', 'MNIST-C_identity', 'MNIST-C_impulse_noise', 'MNIST-C_motion_blur', 'MNIST-C_rotate', 'MNIST-C_scale', 'MNIST-C_shear', 'MNIST-C_shot_noise', 'MNIST-C_spatter', 'MNIST-C_stripe', 'MNIST-C_translate', 'MNIST-C_zigzag', 'MVTec-AD_bottle', 'MVTec-AD_cable', 'MVTec-AD_capsule', 'MVTec-AD_carpet', 'MVTec-AD_grid', 'MVTec-AD_hazelnut', 'MVTec-AD_leather', 'MVTec-AD_metal_nut', 'MVTec-AD_pill', 'MVTec-AD_screw', 'MVTec-AD_tile', 'MVTec-AD_toothbrush', 'MVTec-AD_transistor', 'MVTec-AD_wood', 'MVTec-AD_zipper', 'SVHN_0', 'SVHN_1', 'SVHN_2', 'SVHN_3', 'SVHN_4', 'SVHN_5', 'SVHN_6', 'SVHN_7', 'SVHN_8', 'SVHN_9',
-                            '20news_0', '20news_1', '20news_2', '20news_3', '20news_4', '20news_5', 'agnews_0', 'agnews_1', 'agnews_2', 'agnews_3', 'amazon', 'imdb', 'yelp'
+                            '20news_0', '20news_1', '20news_2', '20news_3', '20news_4', '20news_5', 'agnews_0', 'agnews_1', 'agnews_2', 'agnews_3', 'amazon', 'imdb', 'yelp',
+                            
+                            
+                            '1_ALOI_std', '3_backdoor_std', '5_campaign_std', '7_Cardiotocography_std', '8_celeba_std', '9_census_std', '11_donors_std', '13_fraud_std', '19_landsat_std', '22_magic.gamma_std', 
+                            '27_PageBlocks_std', '33_skin_std', '35_SpamBase_std', '41_Waveform_std'
                             
                             
 )
@@ -44,6 +49,18 @@ def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_k
                             '27_PageBlocks_random', '33_skin_random', '35_SpamBase_random', '41_Waveform_random'):
         dataset_name = dataset_name.replace('_random','')
         dataset = AdBenchRandomDataset(root=data_path,
+                                dataset_name=dataset_name,
+                                n_known_outlier_classes=n_known_outlier_classes,
+                                ratio_known_normal=ratio_known_normal,
+                                ratio_known_outlier=ratio_known_outlier,
+                                ratio_pollution=ratio_pollution,
+                                feature_range = feature_range,
+                                random_state=random_state)
+        
+    if dataset_name in ('1_ALOI_std', '3_backdoor_std', '5_campaign_std', '7_Cardiotocography_std', '8_celeba_std', '9_census_std', '11_donors_std', '13_fraud_std', '19_landsat_std', '22_magic.gamma_std', 
+                            '27_PageBlocks_std', '33_skin_std', '35_SpamBase_std', '41_Waveform_std'):
+        dataset_name = dataset_name.replace('_std','')
+        dataset = AdBenchStdDataset(root=data_path,
                                 dataset_name=dataset_name,
                                 n_known_outlier_classes=n_known_outlier_classes,
                                 ratio_known_normal=ratio_known_normal,
