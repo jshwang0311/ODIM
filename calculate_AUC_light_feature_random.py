@@ -40,10 +40,10 @@ parser.add_argument('--feature_range_max', type=float, default=1.)
 
 args = parser.parse_args()
 
-gpu_num = 0
-dataset_name = '1_ALOI'
-batch_size = 512
-use_cuda = True
+# gpu_num = 0
+# dataset_name = '1_ALOI'
+# batch_size = 512
+# use_cuda = True
 # filter_net_name = 'AD_NLP_mlp_vae_gaussian'
 # data_path = '../ADBench/datasets/NLP_by_RoBERTa'
 #data_path = '../ADBench/datasets/NLP_by_BERT'

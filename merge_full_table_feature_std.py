@@ -9,16 +9,17 @@ dataset_list = [
                 'pendigits_std', 'pima_std', 'speech_std', 'vertebral_std', 'vowels_std', 'wbc_std', 'arrhythmia_std', 'cardio_std', 'satellite_std', 
                 'satimage-2_std', 'shuttle_std', 'thyroid_std',
                 '1_ALOI_std', '3_backdoor_std', '5_campaign_std', '7_Cardiotocography_std', 
-                '8_celeba_std', '9_census_std', '11_donors_std', '13_fraud_std', '19_landsat_std', '22_magic.gamma_std', 
-                '27_PageBlocks_std', '33_skin_std', '35_SpamBase_std', '41_Waveform_std'
+                '8_celeba_std', '9_census_std', 
+                # '11_donors_std', '13_fraud_std', '19_landsat_std', '22_magic.gamma_std', 
+                # '27_PageBlocks_std', '33_skin_std', '35_SpamBase_std', '41_Waveform_std'
                ]
 
 result_dir_path = '/home/x1112480/ODIM/Results'
 tr_file_name_list = [
-                'ODIM_light512_%s_mlp_vae_gaussian_std_train_result.csv'
+                'ODIM_std_train_result.csv'
                 ]
 ts_file_name_list = [
-                'ODIM_light512_%s_mlp_vae_gaussian_std_test_result.csv'
+                'ODIM_std_test_result.csv'
                 ]
 
 col_name_list = ['ODIM_std']
@@ -111,5 +112,5 @@ for i in range(len(colname)):
         ts_reorder_colname.append(colname[i])
 
 
-total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_tabular_feature_std_summary.csv'))
-total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_tabular_feature_std_summary.csv'))
+total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_full_tabular_feature_std_summary.csv'))
+total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_full_tabular_feature_std_summary.csv'))

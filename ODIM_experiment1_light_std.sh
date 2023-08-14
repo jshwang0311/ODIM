@@ -16,3 +16,6 @@ python calculate_AUC_light_std.py --dataset_name "33_skin_std" --gpu_num 0 --bat
 python calculate_AUC_light_std.py --dataset_name "35_SpamBase_std" --gpu_num 0 --batch_size 512 
 python calculate_AUC_light_std.py --dataset_name "41_Waveform_std" --gpu_num 0 --batch_size 512 
 
+
+
+
