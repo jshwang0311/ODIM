@@ -40,10 +40,10 @@ parser.add_argument('--feature_range_max', type=float, default=1.)
 
 args = parser.parse_args()
 
-# gpu_num = 0
-# dataset_name = '1_ALOI_random'
-# batch_size = 512
-# use_cuda = True
+gpu_num = 0
+dataset_name = '1_ALOI'
+batch_size = 512
+use_cuda = True
 # filter_net_name = 'AD_NLP_mlp_vae_gaussian'
 # data_path = '../ADBench/datasets/NLP_by_RoBERTa'
 #data_path = '../ADBench/datasets/NLP_by_BERT'
@@ -761,7 +761,7 @@ if __name__ == "__main__":
             logger = logging.getLogger()
             logger.setLevel(logging.INFO)
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            log_file = save_dir + '/log_'+dataset_name+'_trainOption'+ train_option + '_normal' + str(normal_class) +'.txt'
+            log_file = save_dir + '/log_'+dataset_name+'_trainOption'+ train_option + '_normal' + str(normal_class) +'_random_per_ens.txt'
             file_handler = logging.FileHandler(log_file)
             file_handler.setLevel(logging.INFO)
             file_handler.setFormatter(formatter)
@@ -811,7 +811,8 @@ if __name__ == "__main__":
             torch.cuda.manual_seed(seed)
             train_ys = []
             train_idxs = []
-            for (_, outputs, idxs) in train_loader:
+            
+            for (inputs, outputs, idxs) in train_loader:
                 train_ys.append(outputs.data.numpy())
                 train_idxs.append(idxs.data.numpy())
 
@@ -842,10 +843,13 @@ if __name__ == "__main__":
             loss_column = ['idx','ens_value','ens_st_value','y']
             for model_iter in range(n_ens):
                 model_seed = start_model_seed+(model_iter*10)
-
+                random.seed(model_seed)
+                np.random.seed(model_seed)
+                torch.manual_seed(model_seed)
+                torch.cuda.manual_seed(model_seed)
                 logger.info('Set model seed to %d.' % (model_seed))
                 ## step 1
-                train_idxs_losses, test_idxs_losses, running_time = odim_light(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option)
+                train_idxs_losses, test_idxs_losses, running_time = odim_light_random(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option)
                 train_me_losses = (train_idxs_losses.to_numpy())[:,1]
                 st_train_me_losses = (train_me_losses - train_me_losses.mean())/train_me_losses.std()
                 train_idxs_losses['st_loss'] = st_train_me_losses
@@ -922,7 +926,7 @@ if __name__ == "__main__":
         except:
             train_df = class_train_df
 
-        train_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_train_result.csv'))
+        train_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_random_per_ens_train_result.csv'))
         
         test_auc_list.append(np.mean(test_auc_list))
         test_auc_list.append(np.std(test_auc_list))
@@ -940,7 +944,7 @@ if __name__ == "__main__":
         except:
             test_df = class_test_df
 
-        test_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_test_result.csv'))
+        test_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_random_per_ens_test_result.csv'))
 
 
 

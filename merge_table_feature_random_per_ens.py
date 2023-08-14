@@ -5,23 +5,23 @@ import numpy as np
 
 
 dataset_list = [
-                'annthyroid_random', 'breastw_random', 'cover_random', 'glass_random', 'ionosphere_random', 'letter_random', 'mammography_random', 'musk_random', 'optdigits_random',
-                'pendigits_random', 'pima_random', 'speech_random', 'vertebral_random', 'vowels_random', 'wbc_random', 'arrhythmia_random', 'cardio_random', 'satellite_random', 
-                'satimage-2_random', 'shuttle_random', 'thyroid_random',
-                '1_ALOI_random', '3_backdoor_random', '5_campaign_random', '7_Cardiotocography_random', 
-                '8_celeba_random', '9_census_random', '11_donors_random', '13_fraud_random', '19_landsat_random', '22_magic.gamma_random', 
-                '27_PageBlocks_random', '33_skin_random', '35_SpamBase_random', '41_Waveform_random'
+                'annthyroid', 'breastw', 'cover', 'glass', 'ionosphere', 'letter', 'mammography', 'musk', 'optdigits',
+                'pendigits', 'pima', 'speech', 'vertebral', 'vowels', 'wbc', 'arrhythmia', 'cardio', 'satellite', 
+                'satimage-2', 'shuttle', 'thyroid',
+                '1_ALOI', '3_backdoor', '5_campaign', '7_Cardiotocography', 
+                '8_celeba', '9_census', '11_donors', '13_fraud', '19_landsat', '22_magic.gamma', 
+                '27_PageBlocks', '33_skin', '35_SpamBase', '41_Waveform'
                ]
 
 result_dir_path = '/home/x1112480/ODIM/Results'
 tr_file_name_list = [
-                'ODIM_light512_%s_mlp_vae_gaussian_train_result.csv'
+                'ODIM_light512_%s_mlp_vae_gaussian_random_per_ens_train_result.csv'
                 ]
 ts_file_name_list = [
-                'ODIM_light512_%s_mlp_vae_gaussian_test_result.csv'
+                'ODIM_light512_%s_mlp_vae_gaussian_random_per_ens_test_result.csv'
                 ]
 
-col_name_list = ['ODIM_random']
+col_name_list = ['ODIM_random_per_ens']
 
 total_tr_result_list = []
 total_ts_result_list = []
@@ -111,5 +111,5 @@ for i in range(len(colname)):
         ts_reorder_colname.append(colname[i])
 
 
-total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_tabular_feature_random_summary.csv'))
-total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_tabular_feature_random_summary.csv'))
+total_tr_result_list[tr_reorder_colname].to_csv(os.path.join(result_dir_path,'train_tabular_random_per_ens_summary.csv'))
+total_ts_result_list[ts_reorder_colname].to_csv(os.path.join(result_dir_path,'test_tabular_random_per_ens_summary.csv'))
