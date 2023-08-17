@@ -38,13 +38,6 @@ parser.add_argument('--data_path', type=str, default='')
 
 args = parser.parse_args()
 
-# gpu_num = 0
-# dataset_name = '20news_0'
-# batch_size = 512
-# use_cuda = True
-# filter_net_name = 'AD_NLP_mlp_vae_gaussian'
-# data_path = '../ADBench/datasets/NLP_by_RoBERTa'
-#data_path = '../ADBench/datasets/NLP_by_BERT'
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 if __name__ == "__main__":
