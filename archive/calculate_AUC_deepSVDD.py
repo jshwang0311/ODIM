@@ -89,13 +89,13 @@ if __name__ == "__main__":
     data_path = '../data'
     if dataset_name == 'mnist':
         
-        net_name = 'mnist_mlp'
+        net_name = 'mnist_LeNet'
         ratio_pollution = 0.1
         normal_class_list = [0,1,2,3,4,5,6,7,8,9]
         
     elif dataset_name == 'fmnist':
         train_option = 'IWAE_alpha1._gaussian'
-        net_name = 'mnist_mlp'
+        net_name = 'mnist_LeNet'
         ratio_pollution = 0.1
         normal_class_list = [0,1,2,3,4,5,6,7,8,9]
         
