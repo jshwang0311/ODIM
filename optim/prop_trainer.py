@@ -531,6 +531,201 @@ def odim_light(filter_net_name, train_loader, test_loader, check_iter, patience,
     return(idxs_losses, test_idxs_losses, running_time)
 
 
+def odim_fully_fit(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option):
+
+    if 'VAE_alpha1.' in train_option:
+        num_sam = 1
+        num_aggr = 1
+        alpha = 1.
+    elif 'IWAE_alpha1.' in train_option:
+        #num_sam = 100
+        #num_aggr = 50
+        # For CNN
+        num_sam = 50
+        num_aggr = 10
+        alpha = 1.
+    elif 'VAE_alpha100.' in train_option:
+        num_sam = 1
+        num_aggr = 1
+        alpha = 100.
+    elif 'IWAE_alpha100.' in train_option:
+        num_sam = 100
+        num_aggr = 50
+        alpha = 100.
+    elif 'VAE_alpha0.01' in train_option:
+        num_sam = 1
+        num_aggr = 1
+        alpha = 0.01
+    elif 'IWAE_alpha0.01' in train_option:
+        num_sam = 100
+        num_aggr = 50
+        alpha = 0.01
+    
+    
+    import random
+    lr = 0.0001
+    n_epochs = 1000
+    lr_milestone = 50
+
+    weight_decay = 0.5e-6
+    pretrain = True
+
+    ae_lr = 0.001
+
+    ae_n_epochs = 350
+    ae_batch_size = 64
+    
+    ae_weight_decay = 0.5e-6
+    ae_optimizer_name = 'adam'
+    optimizer_name = 'adam'
+    
+    ae_lr_milestone = 250
+
+
+    cls_optimizer = 'adam'
+
+    
+    
+    pre_weight_decay = 0.5e-3
+    optimizer_name = 'adam'
+
+    objective = 'one-class'
+    
+
+
+    
+    device = 'cuda'
+
+    filter_model_lr = 0.001
+    
+    
+
+    tot_filter_model_n_epoch = 500
+    
+    random.seed(model_seed)
+    np.random.seed(model_seed)
+    torch.manual_seed(model_seed)
+    torch.cuda.manual_seed(model_seed)
+    torch.backends.cudnn.deterministic = True
+    
+    # Initialize DeepSAD model and set neural network phi
+    filter_model = build_network(filter_net_name)
+    filter_model = filter_model.to(device)
+    
+    filter_optimizer = optim.Adam(filter_model.parameters(), lr=filter_model_lr, weight_decay=weight_decay)
+    # Set learning rate scheduler
+    filter_scheduler = optim.lr_scheduler.MultiStepLR(filter_optimizer, milestones=(lr_milestone,), gamma=0.1)
+
+    # Training
+    logger.info('Starting train filter_model...')
+    start_time = time.time()
+    filter_model.train()
+
+    normal_epoch_loss_list = []
+    abn_epoch_loss_list = []
+
+
+    normal_epoch_loss = 0.0
+    abn_epoch_loss = 0.0
+    n_batches = 0
+    patience_idx = 0
+    best_dist = 0
+    mb_idx = 0
+    start_time = time.time()
+    running_time = 0.
+    for epoch in range(tot_filter_model_n_epoch):
+        epoch_loss = 0.0
+        normal_epoch_loss = 0.0
+        abn_epoch_loss = 0.0
+        n_batches = 0
+        epoch_start_time = time.time()
+        ### Train VAE
+        for data in train_loader:
+            inputs, targets, _ = data
+            inputs = inputs.to(device)
+            inputs = inputs.view(inputs.size(0), -1)
+            if 'binarize' in train_option:
+                inputs = binarize(inputs)
+            # Zero the network parameter gradients
+            filter_model.train()
+            filter_optimizer.zero_grad()
+            # Update network parameters via backpropagation: forward + backward + optimize
+            if 'pixel' in filter_net_name:
+                loss,loss_vec = VAE_IWAE_loss_gaussian_mean_var_pixelcnn(inputs , filter_model , num_sam , num_aggr,alpha)
+            elif 'gaussian' in filter_net_name:
+                loss,loss_vec = VAE_IWAE_loss_gaussian_mean_var(inputs , filter_model , num_sam , num_aggr,alpha)
+            elif 'gaussian' in train_option:
+                loss,loss_vec = VAE_IWAE_loss_gaussian(inputs , filter_model , num_sam , num_aggr,alpha)
+            else:
+                loss,loss_vec = VAE_IWAE_loss(inputs , filter_model , num_sam , num_aggr,alpha)
+            loss.backward()
+            filter_optimizer.step()
+
+            epoch_loss += loss.item()
+            normal_epoch_loss += np.array(loss_vec.data.cpu())[np.where(np.array(targets)==0.)[0]].mean()
+            abn_epoch_loss += np.array(loss_vec.data.cpu())[np.where(np.array(targets)==1.)[0]].mean()
+            n_batches += 1
+            mb_idx += 1
+
+    train_loss_list = []
+    train_targets_list = []
+    idx_list = []
+    ##### Calculate VAE Score
+    filter_model.eval()
+    for data in train_loader:
+        inputs, targets ,idx = data
+        inputs = inputs.to(device)
+        inputs = inputs.view(inputs.size(0), -1)
+        if 'binarize' in train_option:
+            inputs = binarize(inputs)
+        # Update network parameters via backpropagation: forward + backward + optimize
+        if 'pixel' in filter_net_name:
+            loss,loss_vec = VAE_IWAE_loss_gaussian_mean_var_pixelcnn(inputs , filter_model , num_sam , num_aggr,1.)
+        elif 'gaussian' in filter_net_name:
+            loss,loss_vec = VAE_IWAE_loss_gaussian_mean_var(inputs , filter_model , num_sam , num_aggr,1.)
+        elif 'gaussian' in train_option:
+            loss,loss_vec = VAE_IWAE_loss_gaussian(inputs , filter_model , num_sam , num_aggr,1.)
+        else:
+            loss,loss_vec = VAE_IWAE_loss(inputs , filter_model , num_sam , num_aggr,1.)
+
+        train_loss_list.append(loss_vec.data.cpu())
+        train_targets_list += list(targets.numpy())
+        idx_list += list(idx.numpy())
+
+    train_losses = torch.cat(train_loss_list,0).numpy().reshape(-1,1)
+    best_train_loss_list = train_loss_list
+    best_idx = idx_list
+    best_train_targets_list = train_targets_list
+    
+    test_loss_list = []
+    test_targets_list = []
+    test_idx_list = []
+    filter_model.eval()
+    for data in test_loader:
+        inputs, targets ,idx = data
+        inputs = inputs.to(device)
+        inputs = inputs.view(inputs.size(0), -1)
+        if 'binarize' in train_option:
+            inputs = binarize(inputs)
+        # Update network parameters via backpropagation: forward + backward + optimize
+        if 'pixel' in filter_net_name:
+            loss,loss_vec = VAE_IWAE_loss_gaussian_mean_var_pixelcnn(inputs , filter_model , num_sam , num_aggr,1.)
+        elif 'gaussian' in filter_net_name:
+            loss,loss_vec = VAE_IWAE_loss_gaussian_mean_var(inputs , filter_model , num_sam , num_aggr,1.)
+        elif 'gaussian' in train_option:
+            loss,loss_vec = VAE_IWAE_loss_gaussian(inputs , filter_model , num_sam , num_aggr,1.)
+        else:
+            loss,loss_vec = VAE_IWAE_loss(inputs , filter_model , num_sam , num_aggr,1.)
+
+        test_loss_list.append(loss_vec.data.cpu())
+        test_targets_list += list(targets.numpy())
+        test_idx_list += list(idx.numpy())
+
+    idxs_losses = pd.DataFrame({'idx' : best_idx,'loss' : torch.cat(best_train_loss_list,0).numpy()})
+    test_idxs_losses = pd.DataFrame({'idx' : test_idx_list,'loss' : torch.cat(test_loss_list,0).numpy()})
+    return(idxs_losses, test_idxs_losses)
+    
+
 
 def odim_light_random(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option):
 
