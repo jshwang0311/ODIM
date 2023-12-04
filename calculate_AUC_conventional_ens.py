@@ -40,8 +40,8 @@ parser.add_argument('--data_path', type=str, default='')
 
 args = parser.parse_args()
 
-#gpu_num = 0
-#dataset_name = 'fmnist'
+# gpu_num = 0
+# dataset_name = 'fmnist'
 #gpu_num = 0
 #dataset_name = '9_census'
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -576,26 +576,6 @@ if __name__ == "__main__":
                 st_train_losses = (train_losses - train_losses.mean())/train_losses.std()
                 st_test_losses = (test_losses - test_losses.mean())/test_losses.std()
                 #train_losses = train_losses * (-1)
-    
-                auc_val = roc_auc_score(best_train_targets_list,train_losses)
-                ap_val = average_precision_score(best_train_targets_list, train_losses)
-                logger.info('train_auc: %.4f' % auc_val)
-                logger.info('train_ap: %.4f' % ap_val)
-    
-                copod_train_auc_list.append(auc_val)
-                copod_train_ap_list.append(ap_val)
-                
-    
-                
-                #test_losses = test_losses * (-1)
-                
-                auc_val = roc_auc_score(best_test_targets_list,test_losses)
-                ap_val = average_precision_score(best_test_targets_list, test_losses)
-                logger.info('test_auc: %.4f' % auc_val)
-                logger.info('test_ap: %.4f' % ap_val)
-                
-                copod_test_auc_list.append(auc_val)
-                copod_test_ap_list.append(ap_val)
 
                 if model_iter == 0:
                     ens_loss = pd.DataFrame({'y' : best_train_targets_list, 'ens_value' : train_losses, 'ens_st_value' : st_train_losses})
