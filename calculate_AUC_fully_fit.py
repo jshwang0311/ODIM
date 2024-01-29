@@ -375,7 +375,7 @@ if __name__ == "__main__":
 
     data_seed_list = [110,120,130,140,150]
     start_model_seed = 1234
-    n_ens = 1
+    n_ens = 10
     for normal_class_idx in range(len(normal_class_list)):
         normal_class = normal_class_list[normal_class_idx]
         known_outlier_class = 0
