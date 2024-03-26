@@ -345,7 +345,16 @@ def odim_light(filter_net_name, train_loader, test_loader, check_iter, patience,
     torch.backends.cudnn.deterministic = True
     
     # Initialize DeepSAD model and set neural network phi
-    filter_model = build_network(filter_net_name)
+    for data in train_loader:
+        inputs, targets, idx = data
+        inputs = inputs.view(inputs.size(0), -1)
+        break
+    if filter_net_name == 'mnist_mlp_vae_delpix':
+        filter_model = build_network(filter_net_name,x_dim=inputs.shape[1])
+    elif filter_net_name == 'mnist_mlp_vae_gaussian_delpix':
+        filter_model = build_network(filter_net_name,x_dim=inputs.shape[1])
+    else:
+        filter_model = build_network(filter_net_name)
     filter_model = filter_model.to(device)
     
     filter_optimizer = optim.Adam(filter_model.parameters(), lr=filter_model_lr, weight_decay=weight_decay)

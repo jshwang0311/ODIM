@@ -7,7 +7,7 @@ from .reuters_mlp import Reuters_mlp, Reuters_mlp_ae
 from .AD_mlp import MLP, MLP_Autoencoder
 
 
-def build_network(net_name,n_cluster=None):
+def build_network(net_name,n_cluster=None,x_dim=None):
     """Builds the neural network."""
 
     implemented_networks = ('mnist_LeNet','mnist_mlp',
@@ -25,7 +25,7 @@ def build_network(net_name,n_cluster=None):
                             'AD_VResNet_mlp', 'AD_ViT_mlp','AD_ViT512_mlp','AD_ViT256_mlp',
                             'AD_BERT_mlp','AD_BERT512_mlp','AD_BERT256_mlp',
                             'AD_RoBERTa_mlp','AD_RoBERTa512_mlp','AD_RoBERTa256_mlp',
-                            'mnist_mlp_vae','mnist_mlp_vae_gaussian', 
+                            'mnist_mlp_vae','mnist_mlp_vae_gaussian', 'mnist_mlp_vae_delpix', 'mnist_mlp_vae_gaussian_delpix',
                             'reuters_mlp_vae_256_128_64_gaussian', 
                             'arrhythmia_mlp_vae_gaussian', 'cardio_mlp_vae_gaussian', 'satellite_mlp_vae_gaussian', 
                             'satimage-2_mlp_vae_gaussian', 'shuttle_mlp_vae_gaussian',
@@ -38,6 +38,10 @@ def build_network(net_name,n_cluster=None):
                             '9_census_mlp_vae_gaussian', '11_donors_mlp_vae_gaussian', '13_fraud_mlp_vae_gaussian', '19_landsat_mlp_vae_gaussian', 
                             '22_magic.gamma_mlp_vae_gaussian', 
                             '27_PageBlocks_mlp_vae_gaussian', '33_skin_mlp_vae_gaussian', '35_SpamBase_mlp_vae_gaussian', '41_Waveform_mlp_vae_gaussian',
+                            
+                            '12_fault_mlp_vae_gaussian','15_Hepatitis_mlp_vae_gaussian', '16_http_mlp_vae_gaussian', '17_InternetAds_mlp_vae_gaussian', '21_Lymphography_mlp_vae_gaussian', '34_smtp_mlp_vae_gaussian', '37_Stamps_mlp_vae_gaussian', '43_WDBC_mlp_vae_gaussian', '44_Wilt_mlp_vae_gaussian', '45_wine_mlp_vae_gaussian', '46_WPBC_mlp_vae_gaussian', '47_yeast_mlp_vae_gaussian',
+                            
+                            
                             'AD_VResNet_mlp_vae_gaussian', 'AD_ViT_mlp_vae_gaussian','AD_ViT512_mlp_vae_gaussian','AD_ViT256_mlp_vae_gaussian',
                             'AD_BERT_mlp_vae_gaussian','AD_BERT512_mlp_vae_gaussian','AD_BERT256_mlp_vae_gaussian',
                             'AD_RoBERTa_mlp_vae_gaussian','AD_RoBERTa512_mlp_vae_gaussian','AD_RoBERTa256_mlp_vae_gaussian'
@@ -55,9 +59,12 @@ def build_network(net_name,n_cluster=None):
         
     if net_name == 'mnist_mlp_vae':
         net = MNIST_mlp_Vae()
+    if net_name == 'mnist_mlp_vae_delpix':
+        net = MNIST_mlp_Vae(x_dim=x_dim)
     if net_name == 'mnist_mlp_vae_gaussian':
         net = MNIST_mlp_Vae_gaussian()
-    
+    if net_name == 'mnist_mlp_vae_gaussian_delpix':
+        net = MNIST_mlp_Vae_gaussian(x_dim=x_dim)
 
         
     if net_name == 'reuters_mlp_vae_256_128_64_gaussian':
@@ -107,6 +114,34 @@ def build_network(net_name,n_cluster=None):
         net = AD_mlp_Vae_gaussian(x_dim=57, h_dims=[32, 16], rep_dim=8, bias=False)
     if net_name == '41_Waveform_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=21, h_dims=[32, 16], rep_dim=8, bias=False)
+
+
+
+    if net_name == '12_fault_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=27, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '15_Hepatitis_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=19, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '16_http_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=3, h_dims=[32, 16], rep_dim=2, bias=False)
+    if net_name == '17_InternetAds_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=1555, h_dims=[512, 256], rep_dim=128, bias=False)
+    if net_name == '21_Lymphography_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=18, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '34_smtp_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=3, h_dims=[32, 16], rep_dim=2, bias=False)
+    if net_name == '37_Stamps_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=9, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '43_WDBC_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=30, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '44_Wilt_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=5, h_dims=[32, 16], rep_dim=4, bias=False)
+    if net_name == '45_wine_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=13, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '46_WPBC_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=33, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '47_yeast_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=8, h_dims=[32, 16], rep_dim=6, bias=False)
+    
         
     
     

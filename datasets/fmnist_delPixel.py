@@ -1,16 +1,15 @@
 from torch.utils.data import Subset
 from PIL import Image
-from torchvision.datasets import MNIST
+from torchvision.datasets import FashionMNIST
 from base.torchvision_dataset import TorchvisionDataset
 from .preprocessing import create_semisupervised_setting
 
 import torch
 import torchvision.transforms as transforms
 import random
-import numpy as np
 
 
-class MNIST_Dataset(TorchvisionDataset):
+class FashionMNIST_delPixel_Dataset(TorchvisionDataset):
 
     def __init__(self, root: str, normal_class: int = 0, known_outlier_class: int = 1, n_known_outlier_classes: int = 0,
                  ratio_known_normal: float = 0.0, ratio_known_outlier: float = 0.0, ratio_pollution: float = 0.0):
@@ -18,16 +17,10 @@ class MNIST_Dataset(TorchvisionDataset):
 
         # Define normal and outlier classes
         self.n_classes = 2  # 0: normal, 1: outlier
-        if type(normal_class)==list:
-            self.normal_classes = tuple(normal_class)
-        else:
-            self.normal_classes = tuple([normal_class])
-
+        self.normal_classes = tuple([normal_class])
         self.outlier_classes = list(range(0, 10))
         self.outlier_classes.remove(normal_class)
         self.outlier_classes = tuple(self.outlier_classes)
-        self.ori_train_set = None
-        self.ori_train_indices = None
 
         if n_known_outlier_classes == 0:
             self.known_outlier_classes = ()
@@ -36,13 +29,13 @@ class MNIST_Dataset(TorchvisionDataset):
         else:
             self.known_outlier_classes = tuple(random.sample(self.outlier_classes, n_known_outlier_classes))
 
-        # MNIST preprocessing: feature scaling to [0, 1]
+        # FashionMNIST preprocessing: feature scaling to [0, 1]
         transform = transforms.ToTensor()
         target_transform = transforms.Lambda(lambda x: int(x in self.outlier_classes))
 
         # Get train set
-        train_set = MyMNIST(root=self.root, train=True, transform=transform, target_transform=target_transform,
-                            download=True)
+        train_set = MyFashionMNIST(root=self.root, train=True, transform=transform, target_transform=target_transform,
+                                   download=True)
 
         # Create semi-supervised setting
         idx, _, semi_targets = create_semisupervised_setting(train_set.targets.cpu().data.numpy(), self.normal_classes,
@@ -52,18 +45,30 @@ class MNIST_Dataset(TorchvisionDataset):
 
         self.ori_train_set = train_set
         self.ori_train_indices = idx
+        
+        data_std = torch.std(train_set.data[idx,:].to(torch.float32),dim=0)
+        nonzero_std_idx = torch.where(data_std!=0.)
+        filter_data = []
+        for i in range(train_set.data.shape[0]):
+            filter_data.append(train_set.data[i,:][nonzero_std_idx].unsqueeze(0))
+        filter_data = torch.concat(filter_data,0)
+        train_set.data = filter_data
 
         # Subset train_set to semi-supervised setup
         self.train_set = Subset(train_set, idx)
 
         # Get test set
-        self.test_set = MyMNIST(root=self.root, train=False, transform=transform, target_transform=target_transform,
-                                download=True)
+        test_set = MyFashionMNIST(root=self.root, train=False, transform=transform,
+                                       target_transform=target_transform, download=True)
+        filter_data = []
+        for i in range(test_set.data.shape[0]):
+            filter_data.append(test_set.data[i,:][nonzero_std_idx].unsqueeze(0))
+        filter_data = torch.concat(filter_data,0)
+        test_set.data = filter_data
+        self.test_set = test_set
 
 
-        
-        
-class Refine_MNIST_Dataset(TorchvisionDataset):
+class Refine_FashionMNIST_Dataset(TorchvisionDataset):
 
     def __init__(self, mnist,subset_indices = None):
         super().__init__(mnist)
@@ -80,20 +85,19 @@ class Refine_MNIST_Dataset(TorchvisionDataset):
         else:
             self.train_set = Subset(mnist.ori_train_set, subset_indices)
 
-        
-class MyMNIST(MNIST):
+class MyFashionMNIST(FashionMNIST):
     """
-    Torchvision MNIST class with additional targets for the semi-supervised setting and patch of __getitem__ method
-    to also return the semi-supervised target as well as the index of a data sample.
+    Torchvision FashionMNIST class with additional targets for the semi-supervised setting and patch of __getitem__
+    method to also return the semi-supervised target as well as the index of a data sample.
     """
 
     def __init__(self, *args, **kwargs):
-        super(MyMNIST, self).__init__(*args, **kwargs)
+        super(MyFashionMNIST, self).__init__(*args, **kwargs)
 
         self.semi_targets = torch.zeros_like(self.targets)
 
     def __getitem__(self, index):
-        """Override the original method of the MNIST class.
+        """Override the original method of the MyFashionMNIST class.
         Args:
             index (int): Index
 

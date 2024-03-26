@@ -30,7 +30,7 @@ parser = argparse.ArgumentParser(description='ODIM Experiment')
 # arguments for optimization
 parser.add_argument('--use_cuda', type=bool, default=True)
 parser.add_argument('--gpu_num', type=int, default=1)
-parser.add_argument('--dataset_name', type=str, default='mnist')
+parser.add_argument('--dataset_name', type=str, default='1_ALOI_all')
 parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--filter_net_name', type=str, default='')
 parser.add_argument('--data_path', type=str, default='')
@@ -206,98 +206,98 @@ if __name__ == "__main__":
         patience_thres = 300
     
 
-    elif dataset_name == '1_ALOI':
+    elif  '1_ALOI' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '1_ALOI_mlp_vae_gaussian'
         ratio_pollution = 0.0304
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '3_backdoor':
+    elif  '3_backdoor' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '3_backdoor_mlp_vae_gaussian'
         ratio_pollution = 0.0244
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '5_campaign':
+    elif  '5_campaign' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '5_campaign_mlp_vae_gaussian'
         ratio_pollution = 0.11265
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '7_Cardiotocography':
+    elif  '7_Cardiotocography' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '7_Cardiotocography_mlp_vae_gaussian'
         ratio_pollution = 0.2204
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '8_celeba':
+    elif  '8_celeba' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '8_celeba_mlp_vae_gaussian'
         ratio_pollution = 0.0224
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '9_census':
+    elif  '9_census' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '9_census_mlp_vae_gaussian'
         ratio_pollution = 0.062
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '11_donors':
+    elif  '11_donors' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '11_donors_mlp_vae_gaussian'
         ratio_pollution = 0.05925
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '13_fraud':
+    elif  '13_fraud' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '13_fraud_mlp_vae_gaussian'
         ratio_pollution = 0.0017
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '19_landsat':
+    elif  '19_landsat' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '19_landsat_mlp_vae_gaussian'
         ratio_pollution = 0.2071
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '22_magic.gamma':
+    elif  '22_magic.gamma' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '22_magic.gamma_mlp_vae_gaussian'
         ratio_pollution = 0.3516
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '27_PageBlocks':
+    elif  '27_PageBlocks' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '27_PageBlocks_mlp_vae_gaussian'
         ratio_pollution = 0.0946
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '33_skin':
+    elif  '33_skin' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '33_skin_mlp_vae_gaussian'
         ratio_pollution = 0.2075
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '35_SpamBase':
+    elif  '35_SpamBase' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '35_SpamBase_mlp_vae_gaussian'
         ratio_pollution = 0.3991
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '41_Waveform':
+    elif  '41_Waveform' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '41_Waveform_mlp_vae_gaussian'
@@ -307,14 +307,14 @@ if __name__ == "__main__":
     
     
     
-    elif dataset_name == '12_fault':
+    elif  '12_fault' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '12_fault_mlp_vae_gaussian'
         ratio_pollution = 0.3467
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '15_Hepatitis':
+    elif  '15_Hepatitis' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '15_Hepatitis_mlp_vae_gaussian'
@@ -322,76 +322,77 @@ if __name__ == "__main__":
         normal_class_list = [0]
         patience_thres = 100
         batch_size = 32
-    elif dataset_name == '16_http':
+    elif  '16_http' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '16_http_mlp_vae_gaussian'
         ratio_pollution = 0.003896
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '17_InternetAds':
+    elif  '17_InternetAds' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '17_InternetAds_mlp_vae_gaussian'
         ratio_pollution = 0.1872
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '21_Lymphography':
+    elif  '21_Lymphography' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '21_Lymphography_mlp_vae_gaussian'
         ratio_pollution = 0.0405
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '34_smtp':
+    elif  '34_smtp' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '34_smtp_mlp_vae_gaussian'
         ratio_pollution = 0.0003
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '37_Stamps':
+    elif  '37_Stamps' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '37_Stamps_mlp_vae_gaussian'
         ratio_pollution = 0.0912
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '43_WDBC':
+    elif  '43_WDBC' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '43_WDBC_mlp_vae_gaussian'
         ratio_pollution = 0.0272
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '44_Wilt':
+    elif  '44_Wilt' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '44_Wilt_mlp_vae_gaussian'
         ratio_pollution = 0.0533
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '45_wine':
+    elif  '45_wine' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '45_wine_mlp_vae_gaussian'
         ratio_pollution = 0.0775
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '46_WPBC':
+    elif  '46_WPBC' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '46_WPBC_mlp_vae_gaussian'
         ratio_pollution = 0.2374
         normal_class_list = [0]
         patience_thres = 100
-    elif dataset_name == '47_yeast':
+    elif  '47_yeast' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '47_yeast_mlp_vae_gaussian'
         ratio_pollution = 0.3416
         normal_class_list = [0]
         patience_thres = 100
+
     
     
     elif 'CIFAR10' in dataset_name:
@@ -556,7 +557,7 @@ if __name__ == "__main__":
                 logger.info('Known anomaly classes: %s' % (dataset.known_outlier_classes,))
 
             # Train Filter model 
-            train_loader, test_loader = dataset.loaders(batch_size=batch_size, num_workers=n_jobs_dataloader)
+            train_loader = dataset.loaders(batch_size=batch_size, num_workers=n_jobs_dataloader)
 
 
             ## extract train ys and idxs
@@ -575,17 +576,6 @@ if __name__ == "__main__":
             train_idxs_ys = pd.DataFrame({'idx' : train_idxs,'y' : train_ys})
 
 
-            test_ys = []
-            test_idxs = []
-            for (_, outputs, idxs) in test_loader:
-                test_ys.append(outputs.data.numpy())
-                test_idxs.append(idxs.data.numpy())
-
-            test_ys = np.hstack(test_ys)
-            test_idxs = np.hstack(test_idxs)
-            test_idxs_ys = pd.DataFrame({'idx' : test_idxs,'y' : test_ys})
-
-
 
             ens_train_me_losses = 0
             ens_st_train_me_losses = 0
@@ -601,7 +591,7 @@ if __name__ == "__main__":
 
                 logger.info('Set model seed to %d.' % (model_seed))
                 ## step 1
-                train_idxs_losses, test_idxs_losses, running_time = odim_light(filter_net_name, train_loader, test_loader, check_iter, patience, model_seed,seed, logger, train_option)
+                train_idxs_losses, _, running_time = odim_light(filter_net_name, train_loader, train_loader, check_iter, patience, model_seed,seed, logger, train_option)
                 train_me_losses = (train_idxs_losses.to_numpy())[:,1]
                 st_train_me_losses = (train_me_losses - train_me_losses.mean())/train_me_losses.std()
                 train_idxs_losses['st_loss'] = st_train_me_losses
@@ -611,30 +601,16 @@ if __name__ == "__main__":
                 logger.info('\n...Train_AUC value- VAE: %0.4f' %(roc_auc))
 
 
-                test_me_losses = (test_idxs_losses.to_numpy())[:,1]
-                st_test_me_losses = (test_me_losses - test_me_losses.mean())/test_me_losses.std()
-                test_idxs_losses['st_loss'] = st_test_me_losses
-                add_label_idx_test_losses = pd.merge(test_idxs_losses, test_idxs_ys, on ='idx')
-                fpr, tpr, thresholds = metrics.roc_curve(np.array(add_label_idx_test_losses['y']), np.array(add_label_idx_test_losses['loss']), pos_label=1)
-                roc_auc = metrics.auc(fpr, tpr)
-                logger.info('\n...Test_AUC value- VAE: %0.4f' %(roc_auc))
 
                 if model_iter == 0:
                     ens_loss = add_label_idx_losses
                     ens_loss.columns = loss_column
 
-                    test_ens_loss = add_label_idx_test_losses
-                    test_ens_loss.columns = loss_column
                 else:
                     merge_data = pd.merge(ens_loss, train_idxs_losses, on = 'idx')
                     merge_data['ens_value'] = merge_data['ens_value'] + merge_data['loss']
                     merge_data['ens_st_value'] = merge_data['ens_st_value'] + merge_data['st_loss']
                     ens_loss = merge_data[loss_column]
-
-                    test_merge_data = pd.merge(test_ens_loss, test_idxs_losses, on = 'idx')
-                    test_merge_data['ens_value'] = test_merge_data['ens_value'] + test_merge_data['loss']
-                    test_merge_data['ens_st_value'] = test_merge_data['ens_st_value'] + test_merge_data['st_loss']
-                    test_ens_loss = test_merge_data[loss_column]
 
 
                 train_auc = roc_auc_score(np.array(ens_loss['y']), np.array(ens_loss['ens_value']))
@@ -642,23 +618,14 @@ if __name__ == "__main__":
                 logger.info('\n ...Train_AUC value- Ens VAE: %0.4f' % train_auc)
                 logger.info('\n ...Train_PRAUC value- Ens VAE: %0.4f' % train_ap)
 
-                test_auc = roc_auc_score(np.array(test_ens_loss['y']), np.array(test_ens_loss['ens_value']))
-                test_ap = average_precision_score(np.array(test_ens_loss['y']), np.array(test_ens_loss['ens_value']))
-                logger.info('\n ...Test_AUC value- Ens VAE: %0.4f' %(test_auc))
-                logger.info('\n ...Test_PRAUC value- Ens VAE: %0.4f' %(test_ap))
 
             logger.info('\n ...Final Train_AUC value of Ens VAE: %0.4f' %(train_auc))
             logger.info('\n ...Final Train_PRAUC value of Ens VAE: %0.4f' %(train_ap))
             train_auc_list.append(train_auc)
             train_ap_list.append(train_ap)
 
-            logger.info('\n ...Final Test_AUC value of Ens VAE: %0.4f' %(test_auc))
-            logger.info('\n ...Final Test_PRAUC value of Ens VAE: %0.4f' %(test_ap))
-            logger.info('Running_time of InlierMem : %.4f' % (running_time))
-            test_auc_list.append(test_auc)
-            test_ap_list.append(test_ap)
+
             ens_loss.to_csv(os.path.join(save_score_dir,'score_data.csv'),index=False)
-            test_ens_loss.to_csv(os.path.join(save_score_dir,'test_score_data.csv'),index=False)
             logger.removeHandler(file_handler)
         
         
@@ -680,23 +647,6 @@ if __name__ == "__main__":
 
         train_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_train_result.csv'))
         
-        test_auc_list.append(np.mean(test_auc_list))
-        test_auc_list.append(np.std(test_auc_list))
-        test_ap_list.append(np.mean(test_ap_list))
-        test_ap_list.append(np.std(test_ap_list))
-
-        class_test_df = pd.DataFrame({
-            'row_names' : row_name_list,
-            'test_auc' : test_auc_list,
-            'test_ap' : test_ap_list
-        })
-        class_test_df.set_index(keys = 'row_names', inplace = True)
-        try:
-            test_df = pd.concat([test_df, class_test_df], axis = 0)
-        except:
-            test_df = class_test_df
-
-        test_df.to_csv(os.path.join(save_metric_dir,f'ODIM_light{batch_size}_{filter_net_name}_test_result.csv'))
 
 
 

@@ -52,6 +52,7 @@ class MNIST_Dataset(TorchvisionDataset):
 
         self.ori_train_set = train_set
         self.ori_train_indices = idx
+
         # Subset train_set to semi-supervised setup
         self.train_set = Subset(train_set, idx)
 

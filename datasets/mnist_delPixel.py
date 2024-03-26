@@ -10,7 +10,7 @@ import random
 import numpy as np
 
 
-class MNIST_Dataset(TorchvisionDataset):
+class MNIST_delPixel_Dataset(TorchvisionDataset):
 
     def __init__(self, root: str, normal_class: int = 0, known_outlier_class: int = 1, n_known_outlier_classes: int = 0,
                  ratio_known_normal: float = 0.0, ratio_known_outlier: float = 0.0, ratio_pollution: float = 0.0):
@@ -53,12 +53,25 @@ class MNIST_Dataset(TorchvisionDataset):
         self.ori_train_set = train_set
         self.ori_train_indices = idx
 
+        data_std = torch.std(train_set.data[idx,:].to(torch.float32),dim=0)
+        nonzero_std_idx = torch.where(data_std!=0.)
+        filter_data = []
+        for i in range(train_set.data.shape[0]):
+            filter_data.append(train_set.data[i,:][nonzero_std_idx].unsqueeze(0))
+        filter_data = torch.concat(filter_data,0)
+        train_set.data = filter_data
         # Subset train_set to semi-supervised setup
         self.train_set = Subset(train_set, idx)
 
         # Get test set
-        self.test_set = MyMNIST(root=self.root, train=False, transform=transform, target_transform=target_transform,
+        test_set = MyMNIST(root=self.root, train=False, transform=transform, target_transform=target_transform,
                                 download=True)
+        filter_data = []
+        for i in range(test_set.data.shape[0]):
+            filter_data.append(test_set.data[i,:][nonzero_std_idx].unsqueeze(0))
+        filter_data = torch.concat(filter_data,0)
+        test_set.data = filter_data
+        self.test_set = test_set
 
 
         
