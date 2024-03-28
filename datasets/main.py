@@ -64,6 +64,8 @@ def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_k
                          
                          '12_fault_all','15_Hepatitis_all', '16_http_all', '17_InternetAds_all', '21_Lymphography_all', '34_smtp_all', '37_Stamps_all', '43_WDBC_all', '44_Wilt_all', '45_wine_all', '46_WPBC_all', '47_yeast_all',
                             
+                            '2_annthyroid_all', '4_breastw_all', '6_cardio_all', '10_cover_all', '14_glass_all', '18_Ionosphere_all', '20_letter_all', '23_mammography_all', '25_musk_all', '26_optdigits_all', '28_pendigits_all', '29_Pima_all', '30_satellite_all', '31_satimage-2_all', '32_shuttle_all', '36_speech_all', '38_thyroid_all', '39_vertebral_all', '40_vowels_all', '42_WBC_all',
+                            
                             'CIFAR10_0', 'CIFAR10_1', 'CIFAR10_2', 'CIFAR10_3', 'CIFAR10_4', 'CIFAR10_5', 
                             'CIFAR10_6', 'CIFAR10_7', 'CIFAR10_8', 'CIFAR10_9', 
                             'MNIST-C_brightness', 'MNIST-C_canny_edges', 'MNIST-C_dotted_line', 'MNIST-C_fog', 'MNIST-C_glass_blur', 
@@ -162,7 +164,8 @@ def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_k
                           '20news_0_all', '20news_1_all', '20news_2_all', '20news_3_all', '20news_4_all', '20news_5_all', 
                           'agnews_0_all', 'agnews_1_all', 'agnews_2_all', 'agnews_3_all', 'amazon_all', 'imdb_all', 'yelp_all',
                          
-                         '12_fault_all','15_Hepatitis_all', '16_http_all', '17_InternetAds_all', '21_Lymphography_all', '34_smtp_all', '37_Stamps_all', '43_WDBC_all', '44_Wilt_all', '45_wine_all', '46_WPBC_all', '47_yeast_all'
+                         '12_fault_all','15_Hepatitis_all', '16_http_all', '17_InternetAds_all', '21_Lymphography_all', '34_smtp_all', '37_Stamps_all', '43_WDBC_all', '44_Wilt_all', '45_wine_all', '46_WPBC_all', '47_yeast_all',
+                           '2_annthyroid_all', '4_breastw_all', '6_cardio_all', '10_cover_all', '14_glass_all', '18_Ionosphere_all', '20_letter_all', '23_mammography_all', '25_musk_all', '26_optdigits_all', '28_pendigits_all', '29_Pima_all', '30_satellite_all', '31_satimage-2_all', '32_shuttle_all', '36_speech_all', '38_thyroid_all', '39_vertebral_all', '40_vowels_all', '42_WBC_all'
 )):
         dataset_name = dataset_name.replace('_all','')
         dataset = AdBench_All_Dataset(root=data_path,

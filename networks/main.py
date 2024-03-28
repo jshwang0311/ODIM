@@ -39,8 +39,9 @@ def build_network(net_name,n_cluster=None,x_dim=None):
                             '22_magic.gamma_mlp_vae_gaussian', 
                             '27_PageBlocks_mlp_vae_gaussian', '33_skin_mlp_vae_gaussian', '35_SpamBase_mlp_vae_gaussian', '41_Waveform_mlp_vae_gaussian',
                             
-                            '12_fault_mlp_vae_gaussian','15_Hepatitis_mlp_vae_gaussian', '16_http_mlp_vae_gaussian', '17_InternetAds_mlp_vae_gaussian', '21_Lymphography_mlp_vae_gaussian', '34_smtp_mlp_vae_gaussian', '37_Stamps_mlp_vae_gaussian', '43_WDBC_mlp_vae_gaussian', '44_Wilt_mlp_vae_gaussian', '45_wine_mlp_vae_gaussian', '46_WPBC_mlp_vae_gaussian', '47_yeast_mlp_vae_gaussian',
+                            '12_fault_mlp_vae_gaussian','15_Hepatitis_mlp_vae_gaussian', '16_http_mlp_vae_gaussian', '17_InternetAds_mlp_vae_gaussian', '21_Lymphography_mlp_vae_gaussian', '34_smtp_mlp_vae_gaussian', '37_Stamps_mlp_vae_gaussian', '42_WBC_mlp_vae_gaussian', '43_WDBC_mlp_vae_gaussian', '44_Wilt_mlp_vae_gaussian', '45_wine_mlp_vae_gaussian', '46_WPBC_mlp_vae_gaussian', '47_yeast_mlp_vae_gaussian',
                             
+                            '14_glass_mlp_vae_gaussian','18_Ionosphere_mlp_vae_gaussian',
                             
                             'AD_VResNet_mlp_vae_gaussian', 'AD_ViT_mlp_vae_gaussian','AD_ViT512_mlp_vae_gaussian','AD_ViT256_mlp_vae_gaussian',
                             'AD_BERT_mlp_vae_gaussian','AD_BERT512_mlp_vae_gaussian','AD_BERT256_mlp_vae_gaussian',
@@ -131,6 +132,8 @@ def build_network(net_name,n_cluster=None,x_dim=None):
         net = AD_mlp_Vae_gaussian(x_dim=3, h_dims=[32, 16], rep_dim=2, bias=False)
     if net_name == '37_Stamps_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=9, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '42_WBC_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=9, h_dims=[32, 16], rep_dim=8, bias=False)
     if net_name == '43_WDBC_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=30, h_dims=[32, 16], rep_dim=8, bias=False)
     if net_name == '44_Wilt_mlp_vae_gaussian':
@@ -141,6 +144,11 @@ def build_network(net_name,n_cluster=None,x_dim=None):
         net = AD_mlp_Vae_gaussian(x_dim=33, h_dims=[32, 16], rep_dim=8, bias=False)
     if net_name == '47_yeast_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=8, h_dims=[32, 16], rep_dim=6, bias=False)
+    
+    if net_name == '14_glass_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=7, h_dims=[32, 16], rep_dim=6, bias=False)
+    if net_name == '18_Ionosphere_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=32, h_dims=[32, 16], rep_dim=6, bias=False)
     
         
     

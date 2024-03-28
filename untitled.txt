@@ -1,0 +1,3 @@
+dataset_list = [
+                '20news_0_all', '20news_1_all', '20news_2_all', '20news_3_all', '20news_4_all', '20news_5_all', 'agnews_0_all', 'agnews_1_all', 'agnews_2_all', 'agnews_3_all', 'amazon_all', 'imdb_all', 'yelp_all'
+               ]

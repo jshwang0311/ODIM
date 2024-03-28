@@ -30,11 +30,12 @@ parser = argparse.ArgumentParser(description='ODIM Experiment')
 # arguments for optimization
 parser.add_argument('--use_cuda', type=bool, default=True)
 parser.add_argument('--gpu_num', type=int, default=1)
-parser.add_argument('--dataset_name', type=str, default='1_ALOI_all')
+parser.add_argument('--dataset_name', type=str, default='42_WBC_all')
 parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--filter_net_name', type=str, default='')
 parser.add_argument('--data_path', type=str, default='')
 
+# python calculate_AUC_light.py --dataset_name "CIFAR10_0"  --gpu_num 0 --batch_size 512 --data_path "../ADBench/datasets/CV_by_ViT" --filter_net_name "AD_ViT_mlp_vae_gaussian" 
 
 args = parser.parse_args()
 # args = parser.parse_args([])
@@ -206,115 +207,255 @@ if __name__ == "__main__":
         patience_thres = 300
     
 
-    elif  '1_ALOI' in dataset_name:
+    elif '1_ALOI' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '1_ALOI_mlp_vae_gaussian'
         ratio_pollution = 0.0304
         normal_class_list = [0]
         patience_thres = 100
-    elif  '3_backdoor' in dataset_name:
+    elif '2_annthyroid' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'annthyroid_mlp_vae_gaussian'
+        ratio_pollution = 0.07
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '3_backdoor' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '3_backdoor_mlp_vae_gaussian'
         ratio_pollution = 0.0244
         normal_class_list = [0]
         patience_thres = 100
-    elif  '5_campaign' in dataset_name:
+    elif '4_breastw' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'breastw_mlp_vae_gaussian'
+        ratio_pollution = 0.35
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '5_campaign' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '5_campaign_mlp_vae_gaussian'
         ratio_pollution = 0.11265
         normal_class_list = [0]
         patience_thres = 100
-    elif  '7_Cardiotocography' in dataset_name:
+    elif '6_cardio' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'cardio_mlp_vae_gaussian'
+        ratio_pollution = 0.0961
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '7_Cardiotocography' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '7_Cardiotocography_mlp_vae_gaussian'
         ratio_pollution = 0.2204
         normal_class_list = [0]
         patience_thres = 100
-    elif  '8_celeba' in dataset_name:
+    elif '8_celeba' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '8_celeba_mlp_vae_gaussian'
         ratio_pollution = 0.0224
         normal_class_list = [0]
         patience_thres = 100
-    elif  '9_census' in dataset_name:
+    elif '9_census' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '9_census_mlp_vae_gaussian'
         ratio_pollution = 0.062
         normal_class_list = [0]
         patience_thres = 100
-    elif  '11_donors' in dataset_name:
+    elif '10_cover' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name =  'cover_mlp_vae_gaussian'
+        ratio_pollution = 0.009
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '11_donors' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '11_donors_mlp_vae_gaussian'
         ratio_pollution = 0.05925
         normal_class_list = [0]
         patience_thres = 100
-    elif  '13_fraud' in dataset_name:
+    elif '13_fraud' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '13_fraud_mlp_vae_gaussian'
         ratio_pollution = 0.0017
         normal_class_list = [0]
         patience_thres = 100
-    elif  '19_landsat' in dataset_name:
+    elif '14_glass' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '14_glass_mlp_vae_gaussian'
+        ratio_pollution = 0.042
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '18_Ionosphere' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '18_Ionosphere_mlp_vae_gaussian'
+        ratio_pollution = 0.36
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '19_landsat' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '19_landsat_mlp_vae_gaussian'
         ratio_pollution = 0.2071
         normal_class_list = [0]
         patience_thres = 100
-    elif  '22_magic.gamma' in dataset_name:
+    elif '20_letter' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'letter_mlp_vae_gaussian'
+        ratio_pollution = 0.0625
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '22_magic.gamma' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '22_magic.gamma_mlp_vae_gaussian'
         ratio_pollution = 0.3516
         normal_class_list = [0]
         patience_thres = 100
-    elif  '27_PageBlocks' in dataset_name:
+    elif '23_mammography' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'mammography_mlp_vae_gaussian'
+        ratio_pollution = 0.0232
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '25_musk' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'musk_mlp_vae_gaussian'
+        ratio_pollution = 0.0317
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '26_optdigits' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'optdigits_mlp_vae_gaussian'
+        ratio_pollution = 0.0288
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '27_PageBlocks' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '27_PageBlocks_mlp_vae_gaussian'
         ratio_pollution = 0.0946
         normal_class_list = [0]
         patience_thres = 100
-    elif  '33_skin' in dataset_name:
+    elif '28_pendigits' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'pendigits_mlp_vae_gaussian'
+        ratio_pollution = 0.0227
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '29_Pima' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'pima_mlp_vae_gaussian'
+        ratio_pollution = 0.34
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '30_satellite' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name =  'satellite_mlp_vae_gaussian'
+        ratio_pollution = 0.31
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '31_satimage-2' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'satimage-2_mlp_vae_gaussian'
+        ratio_pollution = 0.01
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '32_shuttle' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'shuttle_mlp_vae_gaussian'
+        ratio_pollution = 0.07
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '33_skin' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '33_skin_mlp_vae_gaussian'
         ratio_pollution = 0.2075
         normal_class_list = [0]
         patience_thres = 100
-    elif  '35_SpamBase' in dataset_name:
+    elif '35_SpamBase' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '35_SpamBase_mlp_vae_gaussian'
         ratio_pollution = 0.3991
         normal_class_list = [0]
         patience_thres = 100
-    elif  '41_Waveform' in dataset_name:
+    elif '36_speech' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'speech_mlp_vae_gaussian'
+        ratio_pollution = 0.0165
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '38_thyroid' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'thyroid_mlp_vae_gaussian'
+        ratio_pollution = 0.02
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '39_vertebral' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'vertebral_mlp_vae_gaussian'
+        ratio_pollution = 0.125
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '40_vowels' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = 'vowels_mlp_vae_gaussian'
+        ratio_pollution = 0.034
+        normal_class_list = [0]
+        patience_thres = 100
+    elif '41_Waveform' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '41_Waveform_mlp_vae_gaussian'
         ratio_pollution = 0.029
         normal_class_list = [0]
         patience_thres = 100
+    elif '42_WBC' in dataset_name:
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '42_WBC_mlp_vae_gaussian'
+        ratio_pollution = 0.0448
+        normal_class_list = [0]
+        patience_thres = 100
     
     
     
-    elif  '12_fault' in dataset_name:
+    elif '12_fault' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '12_fault_mlp_vae_gaussian'
         ratio_pollution = 0.3467
         normal_class_list = [0]
         patience_thres = 100
-    elif  '15_Hepatitis' in dataset_name:
+    elif '15_Hepatitis' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '15_Hepatitis_mlp_vae_gaussian'
@@ -322,70 +463,70 @@ if __name__ == "__main__":
         normal_class_list = [0]
         patience_thres = 100
         batch_size = 32
-    elif  '16_http' in dataset_name:
+    elif '16_http' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '16_http_mlp_vae_gaussian'
         ratio_pollution = 0.003896
         normal_class_list = [0]
         patience_thres = 100
-    elif  '17_InternetAds' in dataset_name:
+    elif '17_InternetAds' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '17_InternetAds_mlp_vae_gaussian'
         ratio_pollution = 0.1872
         normal_class_list = [0]
         patience_thres = 100
-    elif  '21_Lymphography' in dataset_name:
+    elif '21_Lymphography' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '21_Lymphography_mlp_vae_gaussian'
         ratio_pollution = 0.0405
         normal_class_list = [0]
         patience_thres = 100
-    elif  '34_smtp' in dataset_name:
+    elif '34_smtp' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '34_smtp_mlp_vae_gaussian'
         ratio_pollution = 0.0003
         normal_class_list = [0]
         patience_thres = 100
-    elif  '37_Stamps' in dataset_name:
+    elif '37_Stamps' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '37_Stamps_mlp_vae_gaussian'
         ratio_pollution = 0.0912
         normal_class_list = [0]
         patience_thres = 100
-    elif  '43_WDBC' in dataset_name:
+    elif '43_WDBC' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '43_WDBC_mlp_vae_gaussian'
         ratio_pollution = 0.0272
         normal_class_list = [0]
         patience_thres = 100
-    elif  '44_Wilt' in dataset_name:
+    elif '44_Wilt' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '44_Wilt_mlp_vae_gaussian'
         ratio_pollution = 0.0533
         normal_class_list = [0]
         patience_thres = 100
-    elif  '45_wine' in dataset_name:
+    elif '45_wine' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '45_wine_mlp_vae_gaussian'
         ratio_pollution = 0.0775
         normal_class_list = [0]
         patience_thres = 100
-    elif  '46_WPBC' in dataset_name:
+    elif '46_WPBC' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '46_WPBC_mlp_vae_gaussian'
         ratio_pollution = 0.2374
         normal_class_list = [0]
         patience_thres = 100
-    elif  '47_yeast' in dataset_name:
+    elif '47_yeast' in dataset_name:
         data_path = '../ADBench/datasets/Classical'
         train_option = 'IWAE_alpha1.'
         filter_net_name = '47_yeast_mlp_vae_gaussian'
@@ -574,6 +715,7 @@ if __name__ == "__main__":
             train_ys = np.hstack(train_ys)
             train_idxs = np.hstack(train_idxs)
             train_idxs_ys = pd.DataFrame({'idx' : train_idxs,'y' : train_ys})
+            logger.info(f'Sample Size : {len(train_ys)}')
 
 
 
