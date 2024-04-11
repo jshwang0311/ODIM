@@ -7,10 +7,10 @@ from .reuters_mlp import Reuters_mlp, Reuters_mlp_ae
 from .AD_mlp import MLP, MLP_Autoencoder
 
 
-def build_network(net_name,n_cluster=None):
+def build_network(net_name,n_cluster=None,x_dim=None):
     """Builds the neural network."""
 
-    implemented_networks = ('mnist_LeNet',
+    implemented_networks = ('mnist_LeNet','mnist_mlp',
                             'arrhythmia_mlp', 'cardio_mlp', 'satellite_mlp', 'satimage-2_mlp', 'shuttle_mlp',
                             'thyroid_mlp',
                             'annthyroid_mlp', 'breastw_mlp', 'cover_mlp', 'ecoli_mlp', 'glass_mlp', 
@@ -25,17 +25,24 @@ def build_network(net_name,n_cluster=None):
                             'AD_VResNet_mlp', 'AD_ViT_mlp','AD_ViT512_mlp','AD_ViT256_mlp',
                             'AD_BERT_mlp','AD_BERT512_mlp','AD_BERT256_mlp',
                             'AD_RoBERTa_mlp','AD_RoBERTa512_mlp','AD_RoBERTa256_mlp',
-                            
-                            
-                            'mnist_mlp_vae','mnist_mlp_vae_gaussian', 
+                            'mnist_mlp_vae','mnist_mlp_vae_gaussian', 'mnist_mlp_vae_delpix', 'mnist_mlp_vae_gaussian_delpix',
                             'reuters_mlp_vae_256_128_64_gaussian', 
                             'arrhythmia_mlp_vae_gaussian', 'cardio_mlp_vae_gaussian', 'satellite_mlp_vae_gaussian', 
                             'satimage-2_mlp_vae_gaussian', 'shuttle_mlp_vae_gaussian',
-                            'annthyroid_mlp_vae_gaussian', 'breastw_mlp_vae_gaussian', 'cover_mlp_vae_gaussian', 'glass_mlp_vae_gaussian', 'ionosphere_mlp_vae_gaussian', 'letter_mlp_vae_gaussian', 'mammography_mlp_vae_gaussian', 'musk_mlp_vae_gaussian', 'optdigits_mlp_vae_gaussian', 'pendigits_mlp_vae_gaussian', 'pima_mlp_vae_gaussian', 'speech_mlp_vae_gaussian', 'vertebral_mlp_vae_gaussian', 'vowels_mlp_vae_gaussian', 'wbc_mlp_vae_gaussian','thyroid_mlp_vae_gaussian',
-                            
-                            '1_ALOI_mlp_vae_gaussian', '3_backdoor_mlp_vae_gaussian', '5_campaign_mlp_vae_gaussian', '7_Cardiotocography_mlp_vae_gaussian', '8_celeba_mlp_vae_gaussian',
-                            '9_census_mlp_vae_gaussian', '11_donors_mlp_vae_gaussian', '13_fraud_mlp_vae_gaussian', '19_landsat_mlp_vae_gaussian', '22_magic.gamma_mlp_vae_gaussian', 
+                            'annthyroid_mlp_vae_gaussian', 'breastw_mlp_vae_gaussian', 'cover_mlp_vae_gaussian', 'glass_mlp_vae_gaussian', 
+                            'ionosphere_mlp_vae_gaussian', 'letter_mlp_vae_gaussian', 'mammography_mlp_vae_gaussian', 'musk_mlp_vae_gaussian', 
+                            'optdigits_mlp_vae_gaussian', 'pendigits_mlp_vae_gaussian', 'pima_mlp_vae_gaussian', 'speech_mlp_vae_gaussian', 'vertebral_mlp_vae_gaussian', 
+                            'vowels_mlp_vae_gaussian', 'wbc_mlp_vae_gaussian','thyroid_mlp_vae_gaussian',
+                            '1_ALOI_mlp_vae_gaussian', '3_backdoor_mlp_vae_gaussian', '5_campaign_mlp_vae_gaussian', '7_Cardiotocography_mlp_vae_gaussian', 
+                            '8_celeba_mlp_vae_gaussian',
+                            '9_census_mlp_vae_gaussian', '11_donors_mlp_vae_gaussian', '13_fraud_mlp_vae_gaussian', '19_landsat_mlp_vae_gaussian', 
+                            '22_magic.gamma_mlp_vae_gaussian', 
                             '27_PageBlocks_mlp_vae_gaussian', '33_skin_mlp_vae_gaussian', '35_SpamBase_mlp_vae_gaussian', '41_Waveform_mlp_vae_gaussian',
+                            
+                            '12_fault_mlp_vae_gaussian','15_Hepatitis_mlp_vae_gaussian', '16_http_mlp_vae_gaussian', '17_InternetAds_mlp_vae_gaussian', '21_Lymphography_mlp_vae_gaussian', '34_smtp_mlp_vae_gaussian', '37_Stamps_mlp_vae_gaussian', '42_WBC_mlp_vae_gaussian', '43_WDBC_mlp_vae_gaussian', '44_Wilt_mlp_vae_gaussian', '45_wine_mlp_vae_gaussian', '46_WPBC_mlp_vae_gaussian', '47_yeast_mlp_vae_gaussian',
+                            
+                            '14_glass_mlp_vae_gaussian','18_Ionosphere_mlp_vae_gaussian',
+                            
                             'AD_VResNet_mlp_vae_gaussian', 'AD_ViT_mlp_vae_gaussian','AD_ViT512_mlp_vae_gaussian','AD_ViT256_mlp_vae_gaussian',
                             'AD_BERT_mlp_vae_gaussian','AD_BERT512_mlp_vae_gaussian','AD_BERT256_mlp_vae_gaussian',
                             'AD_RoBERTa_mlp_vae_gaussian','AD_RoBERTa512_mlp_vae_gaussian','AD_RoBERTa256_mlp_vae_gaussian'
@@ -53,9 +60,12 @@ def build_network(net_name,n_cluster=None):
         
     if net_name == 'mnist_mlp_vae':
         net = MNIST_mlp_Vae()
+    if net_name == 'mnist_mlp_vae_delpix':
+        net = MNIST_mlp_Vae(x_dim=x_dim)
     if net_name == 'mnist_mlp_vae_gaussian':
         net = MNIST_mlp_Vae_gaussian()
-    
+    if net_name == 'mnist_mlp_vae_gaussian_delpix':
+        net = MNIST_mlp_Vae_gaussian(x_dim=x_dim)
 
         
     if net_name == 'reuters_mlp_vae_256_128_64_gaussian':
@@ -105,6 +115,41 @@ def build_network(net_name,n_cluster=None):
         net = AD_mlp_Vae_gaussian(x_dim=57, h_dims=[32, 16], rep_dim=8, bias=False)
     if net_name == '41_Waveform_mlp_vae_gaussian':
         net = AD_mlp_Vae_gaussian(x_dim=21, h_dims=[32, 16], rep_dim=8, bias=False)
+
+
+
+    if net_name == '12_fault_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=27, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '15_Hepatitis_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=19, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '16_http_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=3, h_dims=[32, 16], rep_dim=2, bias=False)
+    if net_name == '17_InternetAds_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=1555, h_dims=[512, 256], rep_dim=128, bias=False)
+    if net_name == '21_Lymphography_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=18, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '34_smtp_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=3, h_dims=[32, 16], rep_dim=2, bias=False)
+    if net_name == '37_Stamps_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=9, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '42_WBC_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=9, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '43_WDBC_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=30, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '44_Wilt_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=5, h_dims=[32, 16], rep_dim=4, bias=False)
+    if net_name == '45_wine_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=13, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '46_WPBC_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=33, h_dims=[32, 16], rep_dim=8, bias=False)
+    if net_name == '47_yeast_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=8, h_dims=[32, 16], rep_dim=6, bias=False)
+    
+    if net_name == '14_glass_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=7, h_dims=[32, 16], rep_dim=6, bias=False)
+    if net_name == '18_Ionosphere_mlp_vae_gaussian':
+        net = AD_mlp_Vae_gaussian(x_dim=32, h_dims=[32, 16], rep_dim=6, bias=False)
+    
         
     
     
@@ -155,6 +200,9 @@ def build_network(net_name,n_cluster=None):
         net = AD_mlp_Vae_gaussian(x_dim=30, h_dims=[32, 16], rep_dim=8, bias=False)
         
         
+        
+    if net_name == 'mnist_mlp':
+        net = MLP(x_dim=784, h_dims=[128, 64], rep_dim=32, bias=False)
         
     if net_name == 'arrhythmia_mlp':
         net = MLP(x_dim=274, h_dims=[128, 64], rep_dim=32, bias=False)
@@ -264,10 +312,12 @@ def build_network(net_name,n_cluster=None):
 def build_autoencoder(net_name):
     """Builds the corresponding autoencoder network."""
 
-    implemented_networks = ('mnist_LeNet', 
+    implemented_networks = ('mnist_LeNet', 'mnist_mlp',
                             'arrhythmia_mlp', 'cardio_mlp', 'satellite_mlp', 'satimage-2_mlp', 'shuttle_mlp',
                             'thyroid_mlp',
-                           'annthyroid_mlp', 'breastw_mlp', 'cover_mlp', 'ecoli_mlp', 'glass_mlp', 'ionosphere_mlp', 'letter_mlp', 'lympho_mlp', 'mammography_mlp', 'musk_mlp', 'optdigits_mlp', 'pendigits_mlp', 'pima_mlp', 'speech_mlp', 'vertebral_mlp', 'vowels_mlp', 'wbc_mlp', 'wine_mlp', 'reuters_mlp',
+                           'annthyroid_mlp', 'breastw_mlp', 'cover_mlp', 'ecoli_mlp', 'glass_mlp', 'ionosphere_mlp', 'letter_mlp',
+                            'lympho_mlp', 'mammography_mlp', 'musk_mlp', 'optdigits_mlp', 'pendigits_mlp', 'pima_mlp', 'speech_mlp', 
+                            'vertebral_mlp', 'vowels_mlp', 'wbc_mlp', 'wine_mlp', 'reuters_mlp',
                            '1_ALOI_mlp', '3_backdoor_mlp', '5_campaign_mlp', '7_Cardiotocography_mlp', 
                             '8_celeba_mlp',
                             '9_census_mlp', '11_donors_mlp', '13_fraud_mlp', '19_landsat_mlp', 
@@ -280,6 +330,9 @@ def build_autoencoder(net_name):
 
     ae_net = None
 
+    if net_name == 'mnist_mlp':
+        ae_net = MLP_Autoencoder(x_dim=784, h_dims=[128, 64], rep_dim=32, bias=False)
+        
     if net_name == 'mnist_LeNet':
         ae_net = MNIST_LeNet_Autoencoder()
     if net_name == 'reuters_mlp':

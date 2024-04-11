@@ -1,0 +1,31 @@
+#!/bin/bash
+
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_0"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_1"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_2"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_3"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_4"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_5"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "agnews_0"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "agnews_1"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "agnews_2"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "agnews_3"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "amazon"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "imdb"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "yelp"  --gpu_num 1 --data_path "../ADBench/datasets/NLP_by_BERT" --filter_net_name "AD_BERT256_mlp_vae_gaussian"
+
+
+
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_0"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_1"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_2"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_3"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_4"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "20news_5"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "agnews_0"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "agnews_1"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "agnews_2"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "agnews_3"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "amazon"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "imdb"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"
+python caculate_AUC_conventional_total_time.py --dataset_name "yelp"  --gpu_num 0 --data_path "../ADBench/datasets/NLP_by_RoBERTa" --filter_net_name "AD_RoBERTa256_mlp_vae_gaussian"

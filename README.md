@@ -13,6 +13,6 @@ For detail, the following paper is described:
 ## Run the Experiments
 In this experiments, you can calculate TrainAUC, TrainAP(AveragePrecision), TestAUC and TestAP of datasets using ODIM.
 ```bash
-python calculate_AUC.py --dataset_name 'mnist' --gpu_num 0
+python calculate_AUC_light_all.py --dataset_name "1_ALOI_all" --gpu_num 0 
 ```
 And you can change `dataset_name` to one of mnist, fmnist, wafer_scale, reuters and tables (annthyroid, brestw, cover, and so on).

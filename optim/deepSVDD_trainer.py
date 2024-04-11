@@ -9,6 +9,7 @@ import time
 import torch
 import torch.optim as optim
 import numpy as np
+import pandas as pd
 
 
 class DeepSVDDTrainer(BaseTrainer):
@@ -38,6 +39,8 @@ class DeepSVDDTrainer(BaseTrainer):
         self.test_prauc = None
         self.test_time = None
         self.test_scores = None
+        self.train_losses = None
+        self.test_losses = None
 
     def train(self, dataset: BaseADDataset, net: BaseNet):
         logger = logging.getLogger()
@@ -162,6 +165,7 @@ class DeepSVDDTrainer(BaseTrainer):
 
         self.train_auc = roc_auc_score(labels, scores)
         self.train_ap = average_precision_score(labels, scores)
+        self.train_losses = pd.DataFrame(idx_label_score, columns = ['idx','y','loss'])
         #logger.info('Train set AUC: {:.2f}%'.format(100. * self.train_auc))
         logger.info('\n ...Train_AUC value: %0.4f' % self.train_auc)
         logger.info('\n ...Train_PRAUC value: %0.4f' % self.train_ap)
@@ -207,6 +211,7 @@ class DeepSVDDTrainer(BaseTrainer):
 
         self.test_auc = roc_auc_score(labels, scores)
         self.test_ap = average_precision_score(labels, scores)
+        self.test_losses = pd.DataFrame(idx_label_score, columns = ['idx','y','loss'])
         #logger.info('Test set AUC: {:.2f}%'.format(100. * self.test_auc))
         logger.info('\n ...Test_AUC value: %0.4f' % self.test_auc)
         logger.info('\n ...Test_PRAUC value: %0.4f' % self.test_ap)

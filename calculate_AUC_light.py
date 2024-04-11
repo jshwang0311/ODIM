@@ -37,14 +37,8 @@ parser.add_argument('--data_path', type=str, default='')
 
 
 args = parser.parse_args()
+# args = parser.parse_args([])
 
-# gpu_num = 0
-# dataset_name = '20news_0'
-# batch_size = 512
-# use_cuda = True
-# filter_net_name = 'AD_NLP_mlp_vae_gaussian'
-# data_path = '../ADBench/datasets/NLP_by_RoBERTa'
-#data_path = '../ADBench/datasets/NLP_by_BERT'
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 if __name__ == "__main__":
@@ -310,6 +304,96 @@ if __name__ == "__main__":
         ratio_pollution = 0.029
         normal_class_list = [0]
         patience_thres = 100
+    
+    
+    
+    elif dataset_name == '12_fault':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '12_fault_mlp_vae_gaussian'
+        ratio_pollution = 0.3467
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '15_Hepatitis':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '15_Hepatitis_mlp_vae_gaussian'
+        ratio_pollution = 0.1625
+        normal_class_list = [0]
+        patience_thres = 100
+        batch_size = 32
+    elif dataset_name == '16_http':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '16_http_mlp_vae_gaussian'
+        ratio_pollution = 0.003896
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '17_InternetAds':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '17_InternetAds_mlp_vae_gaussian'
+        ratio_pollution = 0.1872
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '21_Lymphography':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '21_Lymphography_mlp_vae_gaussian'
+        ratio_pollution = 0.0405
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '34_smtp':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '34_smtp_mlp_vae_gaussian'
+        ratio_pollution = 0.0003
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '37_Stamps':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '37_Stamps_mlp_vae_gaussian'
+        ratio_pollution = 0.0912
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '43_WDBC':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '43_WDBC_mlp_vae_gaussian'
+        ratio_pollution = 0.0272
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '44_Wilt':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '44_Wilt_mlp_vae_gaussian'
+        ratio_pollution = 0.0533
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '45_wine':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '45_wine_mlp_vae_gaussian'
+        ratio_pollution = 0.0775
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '46_WPBC':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '46_WPBC_mlp_vae_gaussian'
+        ratio_pollution = 0.2374
+        normal_class_list = [0]
+        patience_thres = 100
+    elif dataset_name == '47_yeast':
+        data_path = '../ADBench/datasets/Classical'
+        train_option = 'IWAE_alpha1.'
+        filter_net_name = '47_yeast_mlp_vae_gaussian'
+        ratio_pollution = 0.3416
+        normal_class_list = [0]
+        patience_thres = 100
+    
+    
     elif 'CIFAR10' in dataset_name:
         data_path = args.data_path
         train_option = 'IWAE_alpha1.'
@@ -383,6 +467,7 @@ if __name__ == "__main__":
     data_seed_list = [110,120,130,140,150]
     start_model_seed = 1234
     n_ens = 10
+    normal_class_idx = 0
     for normal_class_idx in range(len(normal_class_list)):
         normal_class = normal_class_list[normal_class_idx]
         known_outlier_class = 0
@@ -413,7 +498,7 @@ if __name__ == "__main__":
         train_ap_list = []
         test_auc_list = []
         test_ap_list = []
-        
+        seed_idx = 0
         for seed_idx in range(len(data_seed_list)):
             seed = data_seed_list[seed_idx]
 
@@ -508,6 +593,7 @@ if __name__ == "__main__":
             ## patience index
             train_n = train_ys.shape[0]
             check_iter = np.min(np.array([10, (train_n // batch_size)]))
+            
             patience = np.ceil(patience_thres / check_iter).astype('int')
             loss_column = ['idx','ens_value','ens_st_value','y']
             for model_iter in range(n_ens):
