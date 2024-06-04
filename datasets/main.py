@@ -35,6 +35,7 @@ def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_k
                             '27_PageBlocks', '33_skin', '35_SpamBase', '41_Waveform',
                             
                             '12_fault','15_Hepatitis', '16_http', '17_InternetAds', '21_Lymphography', '34_smtp', '37_Stamps', '43_WDBC', '44_Wilt', '45_wine', '46_WPBC', '47_yeast',
+                            '2_annthyroid', '4_breastw', '6_cardio', '10_cover', '14_glass', '18_Ionosphere', '20_letter', '23_mammography', '25_musk', '26_optdigits', '28_pendigits', '29_Pima', '30_satellite', '31_satimage-2', '32_shuttle', '36_speech', '38_thyroid', '39_vertebral', '40_vowels', '42_WBC',
                             
                             
                             
@@ -191,8 +192,8 @@ def load_dataset(dataset_name, data_path, normal_class, known_outlier_class, n_k
                           '20news_0', '20news_1', '20news_2', '20news_3', '20news_4', '20news_5', 
                           'agnews_0', 'agnews_1', 'agnews_2', 'agnews_3', 'amazon', 'imdb', 'yelp',
                          
-                         '12_fault','15_Hepatitis', '16_http', '17_InternetAds', '21_Lymphography', '34_smtp', '37_Stamps', '43_WDBC', '44_Wilt', '45_wine', '46_WPBC', '47_yeast'
-                         
+                         '12_fault','15_Hepatitis', '16_http', '17_InternetAds', '21_Lymphography', '34_smtp', '37_Stamps', '43_WDBC', '44_Wilt', '45_wine', '46_WPBC', '47_yeast',
+                         '2_annthyroid', '4_breastw', '6_cardio', '10_cover', '14_glass', '18_Ionosphere', '20_letter', '23_mammography', '25_musk', '26_optdigits', '28_pendigits', '29_Pima', '30_satellite', '31_satimage-2', '32_shuttle', '36_speech', '38_thyroid', '39_vertebral', '40_vowels', '42_WBC'
                          ):
         dataset = AdBenchDataset(root=data_path,
                                 dataset_name=dataset_name,

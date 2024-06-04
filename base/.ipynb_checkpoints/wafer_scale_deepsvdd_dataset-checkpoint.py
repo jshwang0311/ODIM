@@ -24,8 +24,8 @@ class WaferDataset(Dataset):
 
         self.classes = [0, 1]
 
-        if isinstance(root, torch._six.string_classes):
-            root = os.path.expanduser(root)
+        # if isinstance(root, torch._six.string_classes):
+        #     root = os.path.expanduser(root)
         self.root = Path(root)
         self.dataset_name = dataset_name
         self.train = train  # training set or test set
